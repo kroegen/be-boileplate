@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "docopt": "^0.6.2",
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^5.6.9",
     "morgan": "~1.9.1",
     "uuid": "^3.3.2"

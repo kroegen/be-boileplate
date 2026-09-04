@@ -3,6 +3,8 @@ const { mongoose } = require('../mongoose.js');
 const db           = require('../mongoose.js');
 const { docopt }   = require('docopt');
 
+db.setUpConnection();
+
 const User = mongoose.model('UserModel');
 const doc  = [
     'Usage:',
@@ -28,8 +30,6 @@ const user = new User({
     email:    opts['--email'] ? opts['--email'] : 'admin@mail.com',
     password: opts['--password']
 });
-
-db.setUpConnection();
 
 new Promise((resolve, reject) => {
     if (opts['--drop']) {

@@ -23,7 +23,7 @@
 - [x] Ensure the isolated test database has the unique User.email index before duplicate-email tests
 - [x] Add a test script and commit the behavior baseline separately before applying fixes
 - [x] Fix undefined `next` in the user, post, and comment create handlers
-- [ ] Fix undefined `next` in the user, post, and comment list handlers
+- [x] Fix undefined `next` in the user, post, and comment list handlers
 - [ ] Define a JSON error contract for validation, duplicate-key, malformed-JSON, and database failures
 - [ ] Add centralized error handling using that contract without exposing stacks
 - [ ] Add regressions for failed creates and failed list queries, verifying the process survives

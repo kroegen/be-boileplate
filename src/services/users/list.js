@@ -1,6 +1,6 @@
 const User  = require('../../models/User');
 const utils = require('../../utils');
-const { STATUS_SUCCESS } = utils.statusCodes;
+const { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } = utils.statusCodes;
 
 exports.getUsers = async (req, res) => {
     try {
@@ -8,6 +8,6 @@ exports.getUsers = async (req, res) => {
 
         await res.send({ status: STATUS_SUCCESS, data: { users } });
     } catch (error) {
-       return next(error);
+        return res.status(HTTP_BAD_REQUEST).send({ status: STATUS_FAILURE, data: { errors: [error.message] } });
     }
 }

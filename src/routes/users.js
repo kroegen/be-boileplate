@@ -2,8 +2,9 @@ const express  = require('express');
 const users    = express.Router();
 
 const usersController = require('../controllers/users');
+const { asyncHandler } = require('../utils/errors');
 
-users.get('/',  usersController.list);
-users.post('/', usersController.create);
+users.get('/',  asyncHandler(usersController.list));
+users.post('/', asyncHandler(usersController.create));
 
 module.exports = users;

@@ -13,15 +13,20 @@ mongoose.connection.on('error', (err) => {
     console.error(`MongoDB connection error: ${err.message}`);
 });
 
-const setUpConnection = (uri) => {
-    console.log(`MongoDB config: ${JSON.stringify(config)}`);
-    return mongoose.connect(uri || defaultUri, { useNewUrlParser: true }).catch((err) => {
+const setUpConnection = async (uri) => {
+    const connectionUri = uri || defaultUri;
+    return mongoose.connect(connectionUri, { useNewUrlParser: true }).catch((err) => {
         console.error(`MongoDB connection failed: ${err.message}`);
         process.exit(1);
     });
-}
+};
+
+const disconnect = async () => {
+    return mongoose.disconnect();
+};
 
 module.exports = {
     mongoose,
-    setUpConnection
+    setUpConnection,
+    disconnect
 };

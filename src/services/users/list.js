@@ -1,11 +1,12 @@
 const User  = require('../../models/User');
 const utils = require('../../utils');
+const { STATUS_SUCCESS } = utils.statusCodes;
 
 exports.getUsers = async (req, res) => {
     try {
         const users = (await User.find()).map(user => utils.dump.dumpUser(user));
 
-        await res.send({ status: 1, data: { users } });
+        await res.send({ status: STATUS_SUCCESS, data: { users } });
     } catch (error) {
        return next(error);
     }

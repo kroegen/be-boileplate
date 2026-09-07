@@ -19,10 +19,10 @@
 - [x] Make MongoDB connection explicit/awaitable and handle connection failures
 - [x] Await MongoDB before HTTP listening and before CLI database operations
 - [x] Add clean database disconnect for test teardown and CLI success/failure paths
-- [ ] Add minimal API smoke tests for all seven endpoints using the recorded status codes and response envelopes
-- [ ] Ensure the isolated test database has the unique User.email index before duplicate-email tests
-- [ ] Add a test script and commit the behavior baseline separately before applying fixes
-- [ ] Fix undefined `next` in the user, post, and comment create handlers
+- [x] Add minimal API smoke tests for all seven endpoints using the recorded status codes and response envelopes
+- [x] Ensure the isolated test database has the unique User.email index before duplicate-email tests
+- [x] Add a test script and commit the behavior baseline separately before applying fixes
+- [x] Fix undefined `next` in the user, post, and comment create handlers
 - [ ] Fix undefined `next` in the user, post, and comment list handlers
 - [ ] Define a JSON error contract for validation, duplicate-key, malformed-JSON, and database failures
 - [ ] Add centralized error handling using that contract without exposing stacks
@@ -85,6 +85,7 @@
 
 ## Phase 5 - API and CLI correctness cleanup
 
+- [x] Replace hardcoded status codes (0/1) with constants from utils/statusCodes.js
 - [ ] Add Comment.content to the schema and test that submitted content survives save, create responses, and list responses
 - [ ] Apply the existing post/comment serializers to create responses and test consistency with list response shapes
 - [ ] Decide HTTP status-code changes using the recorded all-200 logical-failure behavior as the compatibility baseline

@@ -3,7 +3,7 @@ const { mongoose } = require('../mongoose.js');
 const db           = require('../mongoose.js');
 const { docopt }   = require('docopt');
 
-db.setUpConnection();
+db.setUpConnection(process.env.MONGODB_URI);
 
 const User = mongoose.model('UserModel');
 const doc  = [

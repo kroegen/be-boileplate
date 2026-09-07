@@ -7,9 +7,18 @@ require('./models/Post.js');
 
 mongoose.Promise = global.Promise;
 
-const setUpConnection = () => {
+const defaultUri = `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`;
+
+mongoose.connection.on('error', (err) => {
+    console.error(`MongoDB connection error: ${err.message}`);
+});
+
+const setUpConnection = (uri) => {
     console.log(`MongoDB config: ${JSON.stringify(config)}`);
-    mongoose.connect(`mongodb://${config.db.host}:${config.db.port}/${config.db.name}`, { useNewUrlParser: true });
+    return mongoose.connect(uri || defaultUri, { useNewUrlParser: true }).catch((err) => {
+        console.error(`MongoDB connection failed: ${err.message}`);
+        process.exit(1);
+    });
 }
 
 module.exports = {

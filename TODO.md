@@ -17,8 +17,8 @@
 - [x] Separate Express app creation from server startup
 - [x] Allow an explicit MongoDB URI so tests and CLI checks can use an isolated database without touching the shared audit fixtures
 - [x] Make MongoDB connection explicit/awaitable and handle connection failures
-- [ ] Await MongoDB before HTTP listening and before CLI database operations
-- [ ] Add clean database disconnect for test teardown and CLI success/failure paths
+- [x] Await MongoDB before HTTP listening and before CLI database operations
+- [x] Add clean database disconnect for test teardown and CLI success/failure paths
 - [ ] Add minimal API smoke tests for all seven endpoints using the recorded status codes and response envelopes
 - [ ] Ensure the isolated test database has the unique User.email index before duplicate-email tests
 - [ ] Add a test script and commit the behavior baseline separately before applying fixes

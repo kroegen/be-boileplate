@@ -10,7 +10,7 @@ app.set('port', port);
 const startServer = async () => {
     try {
         await db.setUpConnection();
-        
+
         const listenPromise = new Promise((resolve, reject) => {
             server.listen(port, () => {
                 console.info(`Server has started on port: ${port}`);
@@ -20,12 +20,24 @@ const startServer = async () => {
                 reject(err);
             });
         });
-        
+
         await listenPromise;
     } catch (err) {
         console.error(`Failed to start server: ${err.message}`);
         process.exit(1);
     }
 };
+
+const shutdown = async () => {
+    console.info('Shutting down...');
+    await db.disconnect();
+    server.close(() => {
+        console.info('HTTP server closed');
+        process.exit(0);
+    });
+};
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 startServer();

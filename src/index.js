@@ -10,9 +10,18 @@ app.set('port', port);
 const startServer = async () => {
     try {
         await db.setUpConnection();
-        server.listen(port, () => {
-            console.info(`Server has started on port: ${port}`);
+        
+        const listenPromise = new Promise((resolve, reject) => {
+            server.listen(port, () => {
+                console.info(`Server has started on port: ${port}`);
+                resolve();
+            });
+            server.on('error', (err) => {
+                reject(err);
+            });
         });
+        
+        await listenPromise;
     } catch (err) {
         console.error(`Failed to start server: ${err.message}`);
         process.exit(1);

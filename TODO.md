@@ -27,7 +27,7 @@
 - [x] Define a JSON error contract for validation, duplicate-key, malformed-JSON, and database failures
 - [x] Add centralized error handling using that contract without exposing stacks
 - [x] Add regressions for failed creates and failed list queries, verifying the process survives
-- [ ] Handle HTTP listen errors, including EADDRINUSE
+- [x] Handle HTTP listen errors, including EADDRINUSE
 - [ ] Add SIGINT/SIGTERM shutdown that closes the HTTP server and disconnects MongoDB
 - [ ] Stop logging the full database configuration and JWT secret
 - [ ] Apply the user serializer to create-user responses to exclude passwordHash and salt; add a response regression test

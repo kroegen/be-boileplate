@@ -29,8 +29,8 @@
 - [x] Add regressions for failed creates and failed list queries, verifying the process survives
 - [x] Handle HTTP listen errors, including EADDRINUSE
 - [x] Add SIGINT/SIGTERM shutdown that closes the HTTP server and disconnects MongoDB
-- [ ] Stop logging the full database configuration and JWT secret
-- [ ] Apply the user serializer to create-user responses to exclude passwordHash and salt; add a response regression test
+- [x] Stop logging the full database configuration and JWT secret
+- [x] Apply the user serializer to create-user responses to exclude passwordHash and salt; add a response regression test
 - [ ] Verify unaffected endpoint behavior remains compatible and record intentional corrections in the tests
 
 ## Phase 2 - Runtime/tooling

@@ -37,12 +37,22 @@ describe('API Smoke Tests', () => {
                 name: 'Test User',
                 email: expect.any(String),
             });
+            expect(res.body.data.user).not.toHaveProperty('passwordHash');
+            expect(res.body.data.user).not.toHaveProperty('salt');
+        });
+
+        it('should not return passwordHash or salt in user response', async () => {
+            const res = await request(app)
+                .post('/api/users')
+                .send({ name: 'Security Test', email: `security-${Date.now()}@example.com` });
+            expect(res.status).toBe(200);
+            expect(res.body.data.user).not.toHaveProperty('passwordHash');
+            expect(res.body.data.user).not.toHaveProperty('salt');
         });
 
         it('should return 400 when email is missing', async () => {
             const res = await request(app).post('/api/users').send({ name: 'Test User' });
-            // Currently this crashes the server, but after fix it should return 400
-            // For now, we record the current behavior
+            expect(res.status).toBe(400);
         });
     });
 

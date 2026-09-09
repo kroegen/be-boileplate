@@ -1,6 +1,6 @@
 # Agent Behavior
 
-Read SPEC.md and TODO.md before modernization work.
+Read SPEC.md and TODO.md only when needed for the current task.
 
 ## Task execution
 
@@ -15,6 +15,9 @@ Never combine multiple unchecked TODO items.
 - Use tools as soon as enough information is available.
 - Keep changes small and focused.
 - Never continue automatically to the next checkbox.
+- After any context compression, re-read the exact file/range immediately before editing it.
+- Do not perform other tool calls between that read and the edit.
+- When updating TODO.md after compression, read only the required range and edit it immediately.
 
 ## Git commits
 

@@ -9,7 +9,12 @@
       "Bash(sleep *)",
       "Bash(true)",
       "Bash(kill *)",
-      "Bash(sed *)"
+      "Bash(sed *)",
+      "Bash(do *)",
+      "Bash(then *)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(xargs *)"
     ]
   },
   "$version": 4

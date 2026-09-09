@@ -16,6 +16,10 @@ Never combine multiple unchecked TODO items.
 - Keep changes small and focused.
 - Never continue automatically to the next checkbox.
 
+## Git commits
+
+Never add `Co-authored-by: Qwen-Coder <qwen-coder@alibabacloud.com>` to commit messages.
+
 ## Completion
 
 After the task:

@@ -8,7 +8,8 @@
       "Bash(node *)",
       "Bash(sleep *)",
       "Bash(true)",
-      "Bash(kill *)"
+      "Bash(kill *)",
+      "Bash(sed *)"
     ]
   },
   "$version": 4

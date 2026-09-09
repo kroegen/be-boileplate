@@ -37,7 +37,7 @@
 
 - [x] Declare the already verified Node 24 LTS / npm 11+ baseline in package engines
 - [x] Add .nvmrc or .node-version matching the verified runtime
-- [ ] Refresh the lockfile with the declared npm baseline and review the diff
+- [x] Refresh the lockfile with the declared npm baseline and review the diff
 - [ ] Add modern ESLint flat config
 - [ ] Add Prettier
 - [ ] Add lint scripts

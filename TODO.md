@@ -31,7 +31,7 @@
 - [x] Add SIGINT/SIGTERM shutdown that closes the HTTP server and disconnects MongoDB
 - [x] Stop logging the full database configuration and JWT secret
 - [x] Apply the user serializer to create-user responses to exclude passwordHash and salt; add a response regression test
-- [ ] Verify unaffected endpoint behavior remains compatible and record intentional corrections in the tests
+- [x] Verify unaffected endpoint behavior remains compatible and record intentional corrections in the tests
 
 ## Phase 2 - Runtime/tooling
 

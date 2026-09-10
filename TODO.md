@@ -47,7 +47,7 @@
 - [x] Upgrade Express 4 -> 5 and resolve incompatibilities in the existing routes and middleware
 - [x] Verify rejected async handlers and malformed JSON still follow the Phase 1 error contract under Express 5
 - [x] Upgrade jsonwebtoken and test session token signing, expiry, and invalid credentials
-- [ ] Upgrade cors and verify the configured request behavior
+- [x] Upgrade cors and verify the configured request behavior
 - [ ] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement
 - [ ] Replace/remove docopt while preserving the CLI's supported arguments; handle the audited broken flags in Phase 5
 - [ ] Upgrade nodemon and make the dev script entry point explicit instead of relying on package.json main

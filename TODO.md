@@ -40,7 +40,7 @@
 - [x] Refresh the lockfile with the declared npm baseline and review the diff
 - [x] Add modern ESLint flat config
 - [x] Add Prettier
-- [ ] Add lint scripts
+- [x] Add lint scripts
 
 ## Phase 3 - Express/dependency modernization
 

@@ -23,6 +23,10 @@ Never combine multiple unchecked TODO items.
 
 Never add `Co-authored-by: Qwen-Coder <qwen-coder@alibabacloud.com>` to commit messages.
 
+Qwen must never create, amend, or push Git commits. Make the requested code changes, stage them with `git add`, and report the staged files together with a proposed commit message. The user must review and run `git commit` themselves. Do not run `git commit`, `git commit --amend`, `git push`, or any force-push command, even when asked to finish the task.
+
+If an existing commit contains the unwanted trailer, tell the user they can run `scripts/remove-qwen-coauthor.sh` to remove it from the latest local commit. Qwen must not invoke this script because it amends history. Any history rewrite must be reported clearly.
+
 ## Completion
 
 After the task:

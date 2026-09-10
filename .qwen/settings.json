@@ -29,7 +29,8 @@
       "Bash(curl *)",
       "Bash(pkill *)",
       "Bash(lsof *)",
-      "Bash(timeout *)"
+      "Bash(timeout *)",
+      "Bash(tail *)"
     ]
   },
   "$version": 4

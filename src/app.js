@@ -1,4 +1,5 @@
 import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
 import path from 'path';
 import express from 'express';
 import logger from 'morgan';
@@ -7,7 +8,6 @@ import router from './routes/index.js';
 import { handleError } from './utils/errors.js';
 
 const app = express();
-
 const publicPath = path.join(import.meta.dirname, 'public');
 
 app.use(
@@ -18,8 +18,8 @@ app.use(
 );
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(publicPath));
 

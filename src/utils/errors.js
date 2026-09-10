@@ -71,8 +71,8 @@ function asyncHandler(fn) {
 
 // Centralized error handler
 function handleError(error) {
-  // Malformed JSON from Express
-  if (error instanceof SyntaxError && error.type === 'syntax.error') {
+  // Malformed JSON from Express/body-parser
+  if (error instanceof SyntaxError) {
     return handleMalformedJSONError(error);
   }
 

@@ -44,8 +44,8 @@
 
 ## Phase 3 - Express/dependency modernization
 
-- [ ] Upgrade Express 4 -> 5 and resolve incompatibilities in the existing routes and middleware
-- [ ] Verify rejected async handlers and malformed JSON still follow the Phase 1 error contract under Express 5
+- [x] Upgrade Express 4 -> 5 and resolve incompatibilities in the existing routes and middleware
+- [x] Verify rejected async handlers and malformed JSON still follow the Phase 1 error contract under Express 5
 - [x] Upgrade jsonwebtoken and test session token signing, expiry, and invalid credentials
 - [ ] Upgrade cors and verify the configured request behavior
 - [ ] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement

@@ -48,7 +48,7 @@
 - [x] Verify rejected async handlers and malformed JSON still follow the Phase 1 error contract under Express 5
 - [x] Upgrade jsonwebtoken and test session token signing, expiry, and invalid credentials
 - [x] Upgrade cors and verify the configured request behavior
-- [ ] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement
+- [x] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement
 - [ ] Replace/remove docopt while preserving the CLI's supported arguments; handle the audited broken flags in Phase 5
 - [ ] Upgrade nodemon and make the dev script entry point explicit instead of relying on package.json main
 - [ ] Test and commit each breaking dependency change separately; review the audit delta without blindly using npm audit fix --force

@@ -2,6 +2,7 @@
   "name": "be-boilerplate",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "engines": {
     "node": ">=24",
     "npm": ">=11"
@@ -11,7 +12,9 @@
     "start": "node src/index.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "dev": "npx nodemon"
+    "dev": "npx nodemon",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +30,9 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
+    "globals": "^17.12.0",
     "nodemon": "^1.19.1",
     "supertest": "^7.2.2",
     "vitest": "^3.2.7"

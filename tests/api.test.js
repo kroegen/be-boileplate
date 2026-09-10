@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import app from '../src/app.js';
 import { setUpConnection, disconnect } from '../src/mongoose.js';
 
-let testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
+const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 
 describe('API Smoke Tests', () => {
     beforeAll(async () => {

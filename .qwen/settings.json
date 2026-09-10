@@ -15,7 +15,8 @@
       "Bash(fi)",
       "Bash(done)",
       "Bash(xargs *)",
-      "Bash(grep *)"
+      "Bash(grep *)",
+      "Bash(npx *)"
     ]
   },
   "$version": 4

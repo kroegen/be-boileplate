@@ -51,15 +51,15 @@
 - [x] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement
 - [x] Replace/remove docopt while preserving the CLI's supported arguments
 - [x] Upgrade nodemon to v3.1.14 and make the dev script entry point explicit (src/index.js)
-- [ ] Test and commit each breaking dependency change separately; review the audit delta without blindly using npm audit fix --force
+- [x] Test and commit each breaking dependency change separately; review the audit delta without blindly using npm audit fix --force
 
 ## Phase 4 - Mongoose compatibility and staged migration
 
 ### Schema and connection prerequisites
 
-- [ ] Remove mongoose.Promise = global.Promise before the Mongoose 6 upgrade
-- [ ] Remove obsolete connection options at the applicable upgrade step, including useNewUrlParser
-- [ ] Verify strictQuery behavior against the installed version and set the intended behavior explicitly; test filters with unknown schema paths across upgrades
+- [x] Remove mongoose.Promise = global.Promise before the Mongoose 6 upgrade
+- [x] Remove obsolete connection options at the applicable upgrade step, including useNewUrlParser
+- [x] Verify strictQuery behavior against the installed version and set the intended behavior explicitly; test filters with unknown schema paths across upgrades
 - [ ] Remove the unused recursive User pre('update') hook
 - [ ] Remove the redundant async/next pre('save') timestamp hook and verify timestamps remain correct
 - [ ] Decide the UUID String / ObjectId strategy using the current public string IDs and existing data as compatibility constraints

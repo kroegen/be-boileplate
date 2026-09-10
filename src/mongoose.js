@@ -5,6 +5,9 @@ import config from '../bin/config.json' with { type: 'json' };
 // Export Schema for models that need it
 const Schema = mongoose.Schema;
 
+// Explicitly set strictQuery behavior (Mongoose 5 default: true)
+mongoose.set('strictQuery', true);
+
 import './models/Comment.js';
 import './models/User.js';
 import './models/Post.js';
@@ -17,7 +20,7 @@ mongoose.connection.on('error', (err) => {
 
 const setUpConnection = async (uri) => {
   const connectionUri = uri || defaultUri;
-  return mongoose.connect(connectionUri, { useNewUrlParser: true }).catch((err) => {
+  return mongoose.connect(connectionUri).catch((err) => {
     console.error(`MongoDB connection failed: ${err.message}`);
     process.exit(1);
   });

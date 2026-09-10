@@ -50,7 +50,7 @@
 - [x] Upgrade cors and verify the configured request behavior
 - [x] Upgrade morgan to address its advisory and on-headers dependency before the later structured-logging replacement
 - [x] Replace/remove docopt while preserving the CLI's supported arguments
-- [ ] Upgrade nodemon and make the dev script entry point explicit instead of relying on package.json main
+- [x] Upgrade nodemon to v3.1.14 and make the dev script entry point explicit (src/index.js)
 - [ ] Test and commit each breaking dependency change separately; review the audit delta without blindly using npm audit fix --force
 
 ## Phase 4 - Mongoose compatibility and staged migration

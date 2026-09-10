@@ -1,6 +1,3 @@
-const users = require('../services/users');
+import { createUser, getUsers } from '../services/users/index.js';
 
-module.exports = {
-  create: users.createUser,
-  list: users.getUsers,
-};
+export { createUser as create, getUsers as list };

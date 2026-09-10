@@ -1,10 +1,9 @@
 #!/usr/bin/env node
-const { mongoose } = require('../mongoose.js');
-const db = require('../mongoose.js');
-const { docopt } = require('docopt');
+import { mongoose, setUpConnection, disconnect } from '../mongoose.js';
+import { docopt } from 'docopt';
 
 const startCli = async () => {
-  await db.setUpConnection(process.env.MONGODB_URI);
+  await setUpConnection(process.env.MONGODB_URI);
 
   const User = mongoose.model('UserModel');
   const doc = [
@@ -42,7 +41,7 @@ const startCli = async () => {
   } catch (err) {
     console.error(err.message);
   } finally {
-    await mongoose.connection.close();
+    await disconnect();
   }
 };
 

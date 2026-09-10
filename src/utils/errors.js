@@ -95,7 +95,7 @@ function handleError(error) {
   return handleDatabaseError(error);
 }
 
-module.exports = {
+export {
   ERROR_TYPES,
   ERROR_MESSAGES,
   createErrorResponse,

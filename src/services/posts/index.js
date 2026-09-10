@@ -1,4 +1,2 @@
-module.exports = {
-  createPost: require('./create').createPost,
-  getPosts: require('./list').getPosts,
-};
+export { createPost } from './create.js';
+export { getPosts } from './list.js';

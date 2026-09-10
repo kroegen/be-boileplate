@@ -1,7 +1,7 @@
-const Post = require('../../models/Post');
-const { STATUS_SUCCESS } = require('../../utils').statusCodes;
+import Post from '../../models/Post.js';
+import { STATUS_SUCCESS } from '../../utils/statusCodes.js';
 
-exports.createPost = async (req, res) => {
+export const createPost = async (req, res) => {
   const { author, content } = req.body;
   const post = await new Post({ author, content });
 

@@ -1,10 +1,10 @@
-const Comment = require('../../models/Comment');
-const utils = require('../../utils');
-const { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } = utils.statusCodes;
+import Comment from '../../models/Comment.js';
+import { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } from '../../utils/statusCodes.js';
+import { dumpComment } from '../../utils/dump.js';
 
-exports.getComments = async (req, res) => {
+export const getComments = async (req, res) => {
   try {
-    const comments = (await Comment.find()).map((comment) => utils.dump.dumpComment(comment));
+    const comments = (await Comment.find()).map((comment) => dumpComment(comment));
 
     await res.send({ status: STATUS_SUCCESS, data: { comments } });
   } catch (error) {

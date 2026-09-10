@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../../models/User.js';
-import utils from '../../utils/index.js';
+import { dumpUser } from '../../utils/index.js';
 import config from '../../bin/config.json' with { type: 'json' };
 import { STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
 
@@ -12,7 +12,7 @@ export const createSession = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (user && user.checkPassword(password)) {
-      const token = jwt.sign(utils.dump.dumpUser(user), config.app.secret, {
+      const token = jwt.sign(dumpUser(user), config.app.secret, {
         expiresIn: TOKEN_EXPIRY_MS,
       });
 

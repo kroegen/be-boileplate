@@ -1,4 +1,2 @@
-module.exports = {
-  createComment: require('./create').createComment,
-  getComments: require('./list').getComments,
-};
+export { createComment } from './create.js';
+export { getComments } from './list.js';

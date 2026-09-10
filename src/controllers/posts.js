@@ -1,6 +1,3 @@
-const posts = require('../services/posts');
+import { createPost, getPosts } from '../services/posts/index.js';
 
-module.exports = {
-  create: posts.createPost,
-  list: posts.getPosts,
-};
+export { createPost as create, getPosts as list };

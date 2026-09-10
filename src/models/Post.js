@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
-const uuidv4 = require('uuid/v4');
-const Schema = mongoose.Schema;
+import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
-const PostSchema = new Schema({
+const PostSchema = new mongoose.Schema({
   _id: {
     type: String,
     default: uuidv4,
@@ -16,10 +15,10 @@ const PostSchema = new Schema({
   },
   comments: [
     {
-      type: Schema.Types.ObjectId,
+      type: String,
       ref: 'Comment',
     },
   ],
 });
 
-module.exports = mongoose.model('PostModel', PostSchema);
+export default mongoose.model('PostModel', PostSchema);

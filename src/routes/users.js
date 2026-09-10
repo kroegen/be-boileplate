@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { asyncHandler } from '../utils/errors.js';
+import { list, create } from '../controllers/users.js';
+
 const users = express.Router();
 
-const usersController = require('../controllers/users');
-const { asyncHandler } = require('../utils/errors');
+users.get('/', asyncHandler(list));
+users.post('/', asyncHandler(create));
 
-users.get('/', asyncHandler(usersController.list));
-users.post('/', asyncHandler(usersController.create));
-
-module.exports = users;
+export default users;

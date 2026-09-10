@@ -1,10 +1,10 @@
-const User = require('../../models/User');
-const utils = require('../../utils');
-const { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } = utils.statusCodes;
+import User from '../../models/User.js';
+import { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } from '../../utils/statusCodes.js';
+import { dumpUser } from '../../utils/dump.js';
 
-exports.getUsers = async (req, res) => {
+export const getUsers = async (req, res) => {
   try {
-    const users = (await User.find()).map((user) => utils.dump.dumpUser(user));
+    const users = (await User.find()).map((user) => dumpUser(user));
 
     await res.send({ status: STATUS_SUCCESS, data: { users } });
   } catch (error) {

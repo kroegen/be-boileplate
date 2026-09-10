@@ -1,6 +1,6 @@
-const http = require('http');
-const app = require('./app');
-const db = require('./mongoose.js');
+import http from 'http';
+import app from './app.js';
+import { setUpConnection, disconnect } from './mongoose.js';
 
 const port = process.env.PORT || '3000';
 const server = http.createServer(app);
@@ -9,7 +9,7 @@ app.set('port', port);
 
 const startServer = async () => {
   try {
-    await db.setUpConnection();
+    await setUpConnection();
 
     const listenPromise = new Promise((resolve, reject) => {
       server.listen(port, () => {
@@ -30,7 +30,7 @@ const startServer = async () => {
 
 const shutdown = async () => {
   console.info('Shutting down...');
-  await db.disconnect();
+  await disconnect();
   server.close(() => {
     console.info('HTTP server closed');
     process.exit(0);

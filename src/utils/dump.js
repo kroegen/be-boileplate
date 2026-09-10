@@ -1,4 +1,4 @@
-exports.dumpPost = (post) => {
+export const dumpPost = (post) => {
   return {
     id: post._id,
     author: post.author,
@@ -6,7 +6,7 @@ exports.dumpPost = (post) => {
   };
 };
 
-exports.dumpComment = (comment) => {
+export const dumpComment = (comment) => {
   return {
     id: comment._id,
     author: comment.author,
@@ -14,7 +14,7 @@ exports.dumpComment = (comment) => {
   };
 };
 
-exports.dumpUser = (user) => {
+export const dumpUser = (user) => {
   return {
     id: user._id,
     name: user.name,

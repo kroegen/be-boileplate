@@ -1,3 +1,1 @@
-module.exports = {
-  createSession: require('./create').createSession,
-};
+export { createSession } from './create.js';

@@ -1,4 +1,2 @@
-module.exports = {
-  createUser: require('./create').createUser,
-  getUsers: require('./list').getUsers,
-};
+export { createUser } from './create.js';
+export { getUsers } from './list.js';

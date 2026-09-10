@@ -22,7 +22,14 @@
       "Bash(done)",
       "Bash(xargs *)",
       "Bash(grep *)",
-      "Bash(npx *)"
+      "Bash(npx *)",
+      "Bash(npm *)",
+      "Bash(pgrep *)",
+      "Bash(head *)",
+      "Bash(curl *)",
+      "Bash(pkill *)",
+      "Bash(lsof *)",
+      "Bash(timeout *)"
     ]
   },
   "$version": 4

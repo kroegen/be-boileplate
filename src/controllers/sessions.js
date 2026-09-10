@@ -1,5 +1,3 @@
-const sessions = require('../services/sessions');
+import { createSession } from '../services/sessions/index.js';
 
-module.exports = {
-  create: sessions.createSession,
-};
+export { createSession };

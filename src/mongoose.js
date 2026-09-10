@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
-const config = require('./bin/config.json');
+import mongoose from 'mongoose';
 
-require('./models/Comment.js');
-require('./models/User.js');
-require('./models/Post.js');
+import config from '../bin/config.json' with { type: 'json' };
 
-mongoose.Promise = global.Promise;
+// Export Schema for models that need it
+const Schema = mongoose.Schema;
+
+import './models/Comment.js';
+import './models/User.js';
+import './models/Post.js';
 
 const defaultUri = `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`;
 
@@ -25,8 +27,4 @@ const disconnect = async () => {
   return mongoose.disconnect();
 };
 
-module.exports = {
-  mongoose,
-  setUpConnection,
-  disconnect,
-};
+export { mongoose, Schema, setUpConnection, disconnect };

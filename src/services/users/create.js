@@ -1,8 +1,8 @@
-const User = require('../../models/User');
-const { STATUS_SUCCESS } = require('../../utils').statusCodes;
-const { dumpUser } = require('../../utils').dump;
+import User from '../../models/User.js';
+import { STATUS_SUCCESS } from '../../utils/statusCodes.js';
+import { dumpUser } from '../../utils/dump.js';
 
-exports.createUser = async (req, res) => {
+export const createUser = async (req, res) => {
   const { name, email } = req.body;
   const user = await new User({ name, email });
 

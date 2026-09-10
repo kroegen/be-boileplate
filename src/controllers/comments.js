@@ -1,6 +1,3 @@
-const comments = require('../services/comments');
+import { createComment, getComments } from '../services/comments/index.js';
 
-module.exports = {
-  create: comments.createComment,
-  list: comments.getComments,
-};
+export { createComment as create, getComments as list };

@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { createSession } from '../controllers/sessions.js';
+
 const sessions = express.Router();
 
-const sessionsController = require('../controllers/sessions');
+sessions.post('/', createSession);
 
-sessions.post('/', sessionsController.create);
-
-module.exports = sessions;
+export default sessions;

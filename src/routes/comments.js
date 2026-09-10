@@ -1,10 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { asyncHandler } from '../utils/errors.js';
+import { list, create } from '../controllers/comments.js';
+
 const comments = express.Router();
 
-const commentsController = require('../controllers/comments');
-const { asyncHandler } = require('../utils/errors');
+comments.get('/', asyncHandler(list));
+comments.post('/', asyncHandler(create));
 
-comments.get('/', asyncHandler(commentsController.list));
-comments.post('/', asyncHandler(commentsController.create));
-
-module.exports = comments;
+export default comments;

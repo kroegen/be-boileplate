@@ -1,13 +1,14 @@
-const cookieParser = require('cookie-parser');
-const path = require('path');
-const express = require('express');
-const logger = require('morgan');
-const cors = require('cors');
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import express from 'express';
+import logger from 'morgan';
+import cors from 'cors';
+import router from './routes/index.js';
+import { handleError } from './utils/errors.js';
+
 const app = express();
 
-const router = require('./routes');
-const publicPath = path.join(__dirname, 'public');
-const { handleError } = require('./utils/errors');
+const publicPath = path.join(import.meta.dirname, 'public');
 
 app.use(
   cors({
@@ -30,4 +31,4 @@ app.use((err, req, res, next) => {
   res.status(errorResponse.statusCode).json(errorResponse);
 });
 
-module.exports = app;
+export default app;

@@ -1,9 +1,8 @@
-const mongoose = require('mongoose');
-const crypto = require('crypto');
-const uuidv4 = require('uuid/v4');
-const Schema = mongoose.Schema;
+import { mongoose } from '../mongoose.js';
+import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
-const UserSchema = new Schema(
+const UserSchema = new mongoose.Schema(
   {
     _id: {
       type: String,
@@ -78,4 +77,4 @@ UserSchema.pre('update', function userPreUpdateHook(next) {
   next();
 });
 
-module.exports = mongoose.model('UserModel', UserSchema);
+export default mongoose.model('UserModel', UserSchema);

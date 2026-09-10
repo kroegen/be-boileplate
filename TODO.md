@@ -44,7 +44,6 @@
 
 ## Phase 3 - Express/dependency modernization
 
-- [ ] Remove cookie-parser and its middleware registration; no code consumes cookies
 - [ ] Upgrade Express 4 -> 5 and resolve incompatibilities in the existing routes and middleware
 - [ ] Verify rejected async handlers and malformed JSON still follow the Phase 1 error contract under Express 5
 - [x] Upgrade jsonwebtoken and test session token signing, expiry, and invalid credentials
@@ -68,7 +67,7 @@
 - [ ] Align relation refs with registered model names while preserving existing collection mappings
 - [ ] If the chosen strategy changes stored IDs or collection names, prepare and test the required data conversion before switching schemas
 - [ ] Add relation assignment and populate tests for both Post.comments and Comment.postId
-- [ ] Upgrade uuid and replace legacy uuid/v4 imports, or remove it if the chosen ID strategy no longer needs it
+- [x] Upgrade uuid and replace legacy uuid/v4 imports, or remove it if the chosen ID strategy no longer needs it
 - [ ] Add database regressions for unique email enforcement, required/enum validation, User timestamps, serialization, and existing records
 
 ### Version upgrades
@@ -86,6 +85,7 @@
 ## Phase 5 - API and CLI correctness cleanup
 
 - [x] Replace hardcoded status codes (0/1) with constants from utils/statusCodes.js
+- [x] Fix ESM compatibility issues (uuid, mongoose.Schema, statusCodes re-exports)
 - [ ] Add Comment.content to the schema and test that submitted content survives save, create responses, and list responses
 - [ ] Apply the existing post/comment serializers to create responses and test consistency with list response shapes
 - [ ] Decide HTTP status-code changes using the recorded all-200 logical-failure behavior as the compatibility baseline

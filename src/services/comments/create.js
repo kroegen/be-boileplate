@@ -1,7 +1,8 @@
-const Comment = require('../../models/Comment');
-const { STATUS_SUCCESS } = require('../../utils').statusCodes;
+import Comment from '../../models/Comment.js';
+import { STATUS_SUCCESS } from '../../utils/statusCodes.js';
+import { dumpComment } from '../../utils/dump.js';
 
-exports.createComment = async (req, res) => {
+export const createComment = async (req, res) => {
   const { author, content } = req.body;
   const comment = await new Comment({ author, content });
 

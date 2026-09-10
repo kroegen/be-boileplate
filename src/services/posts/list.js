@@ -1,10 +1,10 @@
-const Post = require('../../models/Post');
-const utils = require('../../utils');
-const { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } = utils.statusCodes;
+import Post from '../../models/Post.js';
+import { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } from '../../utils/statusCodes.js';
+import { dumpPost } from '../../utils/dump.js';
 
-exports.getPosts = async (req, res) => {
+export const getPosts = async (req, res) => {
   try {
-    const posts = (await Post.find()).map((post) => utils.dump.dumpPost(post));
+    const posts = (await Post.find()).map((post) => dumpPost(post));
 
     await res.send({ status: STATUS_SUCCESS, data: { posts } });
   } catch (error) {

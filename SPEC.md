@@ -17,6 +17,7 @@ The application should remain runnable after every migration phase.
 ## Current architecture
 
 Runtime:
+
 - Node.js
 - CommonJS
 - Express 4
@@ -26,26 +27,26 @@ Runtime:
 Current layers:
 
 src/
-  bin/
-  controllers/
-  models/
-  routes/
-  services/
-  utils/
-  index.js
-  mongoose.js
+bin/
+controllers/
+models/
+routes/
+services/
+utils/
+index.js
+mongoose.js
 
 Current API:
 
 POST /api/sessions
 
-GET  /api/users
+GET /api/users
 POST /api/users
 
-GET  /api/posts
+GET /api/posts
 POST /api/posts
 
-GET  /api/comments
+GET /api/comments
 POST /api/comments
 
 Preserve these routes during the modernization unless a later explicitly
@@ -96,54 +97,54 @@ Do not blindly use npm audit fix --force.
 Preferred eventual structure:
 
 src/
-  app.ts
-  server.ts
+app.ts
+server.ts
 
-  config/
-    env.ts
+config/
+env.ts
 
-  db/
-    mongoose.ts
+db/
+mongoose.ts
 
-  middleware/
-    error-handler.ts
-    not-found.ts
-    validation.ts
+middleware/
+error-handler.ts
+not-found.ts
+validation.ts
 
-  models/
-    user.ts
-    post.ts
-    comment.ts
+models/
+user.ts
+post.ts
+comment.ts
 
-  routes/
-    sessions.ts
-    users.ts
-    posts.ts
-    comments.ts
-    index.ts
+routes/
+sessions.ts
+users.ts
+posts.ts
+comments.ts
+index.ts
 
-  controllers/
-    sessions.ts
-    users.ts
-    posts.ts
-    comments.ts
+controllers/
+sessions.ts
+users.ts
+posts.ts
+comments.ts
 
-  services/
-    sessions/
-    users/
-    posts/
-    comments/
+services/
+sessions/
+users/
+posts/
+comments/
 
-  schemas/
-    sessions.ts
-    users.ts
-    posts.ts
-    comments.ts
+schemas/
+sessions.ts
+users.ts
+posts.ts
+comments.ts
 
-  utils/
+utils/
 
-  cli/
-    add-user.ts
+cli/
+add-user.ts
 
 tests/
 
@@ -156,6 +157,7 @@ Do not restructure everything at once.
 The Express application must eventually be separated from process startup.
 
 app.ts:
+
 - construct Express application
 - configure middleware
 - configure routes
@@ -163,6 +165,7 @@ app.ts:
 - export app
 
 server.ts:
+
 - load validated environment
 - connect database
 - start HTTP server
@@ -213,6 +216,7 @@ Upgrade major versions separately:
 8 -> 9
 
 At each major:
+
 - read migration notes
 - update incompatible APIs
 - run tests
@@ -224,6 +228,7 @@ Remove obsolete options such as useNewUrlParser when no longer required.
 Do not change ID strategy during dependency migration.
 
 Later audit the current inconsistent ID design:
+
 - some models use UUID string _id
 - some relationships use Mongo ObjectId
 
@@ -239,6 +244,7 @@ is a concrete requirement for UUID identifiers.
 Replace the current SHA1/HMAC password implementation.
 
 Target:
+
 - Argon2id password hashing using a maintained library
 - secure password verification
 - never expose password hashes or salts
@@ -265,6 +271,7 @@ Do not return stack traces in production.
 Introduce schema validation, preferably Zod.
 
 Validate:
+
 - params
 - query
 - body
@@ -277,6 +284,7 @@ HTTP/controller code should not pass unchecked req.body directly into models.
 ## Error handling
 
 Add:
+
 - 404 middleware
 - centralized Express error middleware
 - typed application errors
@@ -295,11 +303,13 @@ Current controllers mostly proxy directly into services.
 Refactor so responsibilities become explicit:
 
 Controllers:
+
 - Express request/response handling
 - validation results
 - status codes
 
 Services:
+
 - business logic
 - database operations
 - no Express Request/Response objects
@@ -313,6 +323,7 @@ Avoid layers that only re-export another function.
 Replace ad-hoc console logging / development-only logging with structured logging.
 
 Preferred:
+
 - pino
 - pino-http
 
@@ -345,27 +356,35 @@ Audit every dependency.
 Likely actions:
 
 cookie-parser:
+
 - remove if cookies are not actually used
 
 cors:
+
 - retain but configure through environment
 
 docopt:
+
 - remove
 
 jsonwebtoken:
+
 - upgrade
 
 mongoose:
+
 - staged upgrade to 9
 
 morgan:
+
 - replace with structured logging if pino is introduced
 
 uuid:
+
 - upgrade temporarily or remove after ID strategy cleanup
 
 nodemon:
+
 - replace with tsx watch after TypeScript migration
 
 Remove unused packages rather than upgrading them for ceremonial reasons.
@@ -448,11 +467,11 @@ typecheck
 
 Example intent:
 
-dev      -> tsx watch src/server.ts
-build    -> tsc
-start    -> node dist/server.js
-test     -> vitest run
-lint     -> eslint .
+dev -> tsx watch src/server.ts
+build -> tsc
+start -> node dist/server.js
+test -> vitest run
+lint -> eslint .
 typecheck -> tsc --noEmit
 
 ---

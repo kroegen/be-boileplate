@@ -5,9 +5,9 @@ import { setUpConnection, disconnect } from '../src/mongoose.js';
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 
 beforeAll(async () => {
-    await setUpConnection(testDbUri);
+  await setUpConnection(testDbUri);
 });
 
 afterAll(async () => {
-    await disconnect();
+  await disconnect();
 });

@@ -1,4 +1,4 @@
 module.exports = {
-    createUser : require('./create').createUser,
-    getUsers   : require('./list').getUsers,
-}
+  createUser: require('./create').createUser,
+  getUsers: require('./list').getUsers,
+};

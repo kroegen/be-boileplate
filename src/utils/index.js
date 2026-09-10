@@ -1,4 +1,4 @@
 module.exports = {
-    dump: require('./dump'),
-    statusCodes: require('./statusCodes'),
-}
+  dump: require('./dump'),
+  statusCodes: require('./statusCodes'),
+};

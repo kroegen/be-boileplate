@@ -7,6 +7,7 @@ ONE checkbox in TODO.md = ONE task.
 Never combine multiple unchecked TODO items, even if they are related.
 
 If the current checkbox requires investigation:
+
 - investigate only what is necessary for that checkbox,
 - record the result,
 - mark that checkbox,

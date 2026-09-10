@@ -1,4 +1,4 @@
-const express  = require('express');
+const express = require('express');
 const sessions = express.Router();
 
 const sessionsController = require('../controllers/sessions');

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const config   = require('./bin/config.json');
+const config = require('./bin/config.json');
 
 require('./models/Comment.js');
 require('./models/User.js');
@@ -10,23 +10,23 @@ mongoose.Promise = global.Promise;
 const defaultUri = `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`;
 
 mongoose.connection.on('error', (err) => {
-    console.error(`MongoDB connection error: ${err.message}`);
+  console.error(`MongoDB connection error: ${err.message}`);
 });
 
 const setUpConnection = async (uri) => {
-    const connectionUri = uri || defaultUri;
-    return mongoose.connect(connectionUri, { useNewUrlParser: true }).catch((err) => {
-        console.error(`MongoDB connection failed: ${err.message}`);
-        process.exit(1);
-    });
+  const connectionUri = uri || defaultUri;
+  return mongoose.connect(connectionUri, { useNewUrlParser: true }).catch((err) => {
+    console.error(`MongoDB connection failed: ${err.message}`);
+    process.exit(1);
+  });
 };
 
 const disconnect = async () => {
-    return mongoose.disconnect();
+  return mongoose.disconnect();
 };
 
 module.exports = {
-    mongoose,
-    setUpConnection,
-    disconnect
+  mongoose,
+  setUpConnection,
+  disconnect,
 };

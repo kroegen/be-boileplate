@@ -39,7 +39,7 @@
 - [x] Add .nvmrc or .node-version matching the verified runtime
 - [x] Refresh the lockfile with the declared npm baseline and review the diff
 - [x] Add modern ESLint flat config
-- [ ] Add Prettier
+- [x] Add Prettier
 - [ ] Add lint scripts
 
 ## Phase 3 - Express/dependency modernization
@@ -190,8 +190,8 @@ Both already match the target runtime baseline (Node 24 LTS, npm 11+).
     `updateOne`.
   - Still sets the obsolete `mongoose.Promise = global.Promise`.
 - Live endpoint check against the running instance:
-  - `GET /api/users`    -> 200 `{"status":1,"data":{"users":[]}}`
-  - `GET /api/posts`    -> 200 `{"status":1,"data":{"posts":[]}}`
+  - `GET /api/users` -> 200 `{"status":1,"data":{"users":[]}}`
+  - `GET /api/posts` -> 200 `{"status":1,"data":{"posts":[]}}`
   - `GET /api/comments` -> 200 `{"status":1,"data":{"comments":[]}}`
 - Result: the current application runs, connects to MongoDB, and serves the API;
   the test database is currently empty.
@@ -207,20 +207,20 @@ Summary: **20 vulnerabilities (2 critical, 9 high, 4 moderate, 5 low)**.
 
 Vulnerable packages as installed, with their origin:
 
-| Package (installed) | Origin | Severity (npm) | npm's fix path |
-| --- | --- | --- | --- |
-| bson 1.1.1 | via mongoose 5.6.9 | critical | `npm audit fix` |
-| jsonwebtoken 8.5.1 | direct dep | high | `--force` → v9 (breaking) |
-| jws <3.2.3 | via jsonwebtoken | high | `npm audit fix` |
-| async 2.6.2 | via mongoose | high | `--force` → mongoose 9 (breaking) |
-| lodash 4.17.15 | via mongoose (async) | high | `npm audit fix` |
-| semver 5.7.2 | via jsonwebtoken, mongodb-core, nodemon | high | `npm audit fix` |
-| body-parser, qs, path-to-regexp, send | via express 4.17.1 | high | `npm audit fix` / Express 5 |
-| cookie <0.7.0 | via cookie-parser 1.4.4 | high | `npm audit fix` / remove cookie-parser |
-| morgan 1.9.1 | direct dep | moderate | `--force` → 1.12.0 (outside declared range) |
-| on-headers <1.1.0 | via morgan | moderate | `--force` → morgan 1.12.0 |
-| mpath <0.8.4, mquery <3.2.3 | via mongoose | moderate | `--force` → mongoose 9 (breaking) |
-| uuid 3.3.2 | direct dep | moderate | `--force` → v11+ (breaking) |
+| Package (installed)                   | Origin                                  | Severity (npm) | npm's fix path                              |
+| ------------------------------------- | --------------------------------------- | -------------- | ------------------------------------------- |
+| bson 1.1.1                            | via mongoose 5.6.9                      | critical       | `npm audit fix`                             |
+| jsonwebtoken 8.5.1                    | direct dep                              | high           | `--force` → v9 (breaking)                   |
+| jws <3.2.3                            | via jsonwebtoken                        | high           | `npm audit fix`                             |
+| async 2.6.2                           | via mongoose                            | high           | `--force` → mongoose 9 (breaking)           |
+| lodash 4.17.15                        | via mongoose (async)                    | high           | `npm audit fix`                             |
+| semver 5.7.2                          | via jsonwebtoken, mongodb-core, nodemon | high           | `npm audit fix`                             |
+| body-parser, qs, path-to-regexp, send | via express 4.17.1                      | high           | `npm audit fix` / Express 5                 |
+| cookie <0.7.0                         | via cookie-parser 1.4.4                 | high           | `npm audit fix` / remove cookie-parser      |
+| morgan 1.9.1                          | direct dep                              | moderate       | `--force` → 1.12.0 (outside declared range) |
+| on-headers <1.1.0                     | via morgan                              | moderate       | `--force` → morgan 1.12.0                   |
+| mpath <0.8.4, mquery <3.2.3           | via mongoose                            | moderate       | `--force` → mongoose 9 (breaking)           |
+| uuid 3.3.2                            | direct dep                              | moderate       | `--force` → v11+ (breaking)                 |
 
 How the planned phases clear this baseline (fixes happen as part of the
 planned upgrades, each tested and committed separately):
@@ -240,17 +240,17 @@ Audited all 8 runtime dependencies + 1 devDependency against actual imports in
 `src/` (29 JS files) and the package.json scripts. No dependency is fully
 unused — every declared package is imported somewhere:
 
-| Dependency       | Used in                                                            |
-| ---------------- | ------------------------------------------------------------------ |
-| express          | `src/index.js`, all `src/routes/*`                                  |
-| mongoose         | `src/mongoose.js`, `src/models/*`                                   |
-| jsonwebtoken     | `src/services/sessions/create.js`                                   |
-| uuid (`uuid/v4`) | `src/models/User.js`, `Post.js`, `Comment.js` (default `_id`)       |
-| morgan           | `src/index.js` (`logger('dev')`)                                    |
-| cors             | `src/index.js` (origin `*`)                                         |
-| cookie-parser    | `src/index.js` (`app.use(cookieParser())`)                          |
-| docopt           | `src/bin/add_user.js` (CLI only)                                    |
-| nodemon (dev)    | `npm run dev` script (`npx nodemon`)                                |
+| Dependency       | Used in                                                       |
+| ---------------- | ------------------------------------------------------------- |
+| express          | `src/index.js`, all `src/routes/*`                            |
+| mongoose         | `src/mongoose.js`, `src/models/*`                             |
+| jsonwebtoken     | `src/services/sessions/create.js`                             |
+| uuid (`uuid/v4`) | `src/models/User.js`, `Post.js`, `Comment.js` (default `_id`) |
+| morgan           | `src/index.js` (`logger('dev')`)                              |
+| cors             | `src/index.js` (origin `*`)                                   |
+| cookie-parser    | `src/index.js` (`app.use(cookieParser())`)                    |
+| docopt           | `src/bin/add_user.js` (CLI only)                              |
+| nodemon (dev)    | `npm run dev` script (`npx nodemon`)                          |
 
 Findings:
 
@@ -297,7 +297,7 @@ apply.
     `{passwordHash, salt, role, status, name, email, _id, createdAt, updatedAt, __v:0}`
     (no dump applied, unlike GET).
   - `{}` (missing email) → **process crash**: `ReferenceError: next is not
-    defined` at `src/services/users/create.js:11`; no HTTP response (curl:
+defined` at `src/services/users/create.js:11`; no HTTP response (curl:
     HTTP 000 / exit 52).
   - duplicate email → same ReferenceError crash (duplicate-key error reaches
     the same undefined `next(error)`).
@@ -310,7 +310,7 @@ apply.
     `{comments:[], author, content, _id, __v:0}` (no timestamps).
   - missing `content` is allowed (key simply omitted in the response).
   - `{}` (missing author) → **process crash**: `ReferenceError: next is not
-    defined` at `src/services/posts/create.js:11`; no HTTP response.
+defined` at `src/services/posts/create.js:11`; no HTTP response.
 - **GET /api/comments** → 200 `{"status":1,"data":{"comments":[...]}}`; each
   item is the `dumpComment` shape **minus content**: `{id, author}` — the
   Comment schema has no `content` field, so content is silently stripped on
@@ -319,7 +319,7 @@ apply.
   - success: 200 `{"status":1,"data":{"comment":{author, _id, __v:0}}}`
     (content dropped, as above).
   - `{}` (missing author) → **process crash**: `ReferenceError: next is not
-    defined` at `src/services/comments/create.js:11`; no HTTP response.
+defined` at `src/services/comments/create.js:11`; no HTTP response.
 
 System-wide error behavior: `createUser`, `createPost` and `createComment`
 services are declared `async (req, res)` with **no `next` parameter**, so any

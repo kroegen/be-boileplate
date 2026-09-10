@@ -1,10 +1,10 @@
 const express = require('express');
-const router  = express.Router();
+const router = express.Router();
 
-const sessions  = require('./sessions');
-const users     = require('./users');
-const posts     = require('./posts');
-const comments  = require('./comments');
+const sessions = require('./sessions');
+const users = require('./users');
+const posts = require('./posts');
+const comments = require('./comments');
 
 // router.use((req, res, next) => {
 //     console.log(req);
@@ -14,8 +14,8 @@ const comments  = require('./comments');
 // });
 
 router.use('/sessions', sessions);
-router.use('/users',    users);
-router.use('/posts',    posts);
+router.use('/users', users);
+router.use('/posts', posts);
 router.use('/comments', comments);
 
 module.exports = router;

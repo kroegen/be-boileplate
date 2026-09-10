@@ -6,27 +6,32 @@ import { STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 
-export const createSession = async(req, res, next) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+export const createSession = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-        if (user && user.checkPassword(password)) {
-            const token = jwt.sign(utils.dump.dumpUser(user), config.app.secret, { expiresIn: TOKEN_EXPIRY_MS });
+    if (user && user.checkPassword(password)) {
+      const token = jwt.sign(utils.dump.dumpUser(user), config.app.secret, {
+        expiresIn: TOKEN_EXPIRY_MS,
+      });
 
-            await res.send({ status: STATUS_SUCCESS, data: { token } });
-        } else {
-            await res.send({
-                status: STATUS_FAILURE,
-                data: {
-                    errors  : [ {
-                        param: 'password',
-                        message: 'Invaild password'
-                    } ],
-                message : 'Invaild param(s)'
-            } });
-        }
-    } catch (error) {
-       return next(error);
+      await res.send({ status: STATUS_SUCCESS, data: { token } });
+    } else {
+      await res.send({
+        status: STATUS_FAILURE,
+        data: {
+          errors: [
+            {
+              param: 'password',
+              message: 'Invaild password',
+            },
+          ],
+          message: 'Invaild param(s)',
+        },
+      });
     }
+  } catch (error) {
+    return next(error);
+  }
 };

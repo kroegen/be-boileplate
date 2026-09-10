@@ -1,40 +1,40 @@
 const http = require('http');
-const app  = require('./app');
-const db   = require('./mongoose.js');
+const app = require('./app');
+const db = require('./mongoose.js');
 
-const port   = process.env.PORT || '3000';
+const port = process.env.PORT || '3000';
 const server = http.createServer(app);
 
 app.set('port', port);
 
 const startServer = async () => {
-    try {
-        await db.setUpConnection();
+  try {
+    await db.setUpConnection();
 
-        const listenPromise = new Promise((resolve, reject) => {
-            server.listen(port, () => {
-                console.info(`Server has started on port: ${port}`);
-                resolve();
-            });
-            server.on('error', (err) => {
-                reject(err);
-            });
-        });
+    const listenPromise = new Promise((resolve, reject) => {
+      server.listen(port, () => {
+        console.info(`Server has started on port: ${port}`);
+        resolve();
+      });
+      server.on('error', (err) => {
+        reject(err);
+      });
+    });
 
-        await listenPromise;
-    } catch (err) {
-        console.error(`Failed to start server: ${err.message}`);
-        process.exit(1);
-    }
+    await listenPromise;
+  } catch (err) {
+    console.error(`Failed to start server: ${err.message}`);
+    process.exit(1);
+  }
 };
 
 const shutdown = async () => {
-    console.info('Shutting down...');
-    await db.disconnect();
-    server.close(() => {
-        console.info('HTTP server closed');
-        process.exit(0);
-    });
+  console.info('Shutting down...');
+  await db.disconnect();
+  server.close(() => {
+    console.info('HTTP server closed');
+    process.exit(0);
+  });
 };
 
 process.on('SIGINT', shutdown);

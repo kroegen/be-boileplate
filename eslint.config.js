@@ -4,7 +4,13 @@ import globals from 'globals';
 export default [
   js.configs.recommended,
   {
-    ignores: ['node_modules/', 'dist/', '.qwen/', 'eslint.config.js', 'src/services/sessions/create.js'],
+    ignores: [
+      'node_modules/',
+      'dist/',
+      '.qwen/',
+      'eslint.config.js',
+      'src/services/sessions/create.js',
+    ],
   },
   // CommonJS source files
   {
@@ -18,8 +24,8 @@ export default [
       'no-console': 'warn',
       'no-debugger': 'warn',
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'prefer-const': 'off',
       'no-var': 'error',
     },
@@ -36,8 +42,8 @@ export default [
       'no-console': 'warn',
       'no-debugger': 'warn',
       'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'eqeqeq': ['error', 'always'],
-      'curly': ['error', 'all'],
+      eqeqeq: ['error', 'always'],
+      curly: ['error', 'all'],
       'prefer-const': 'off',
       'no-var': 'error',
     },

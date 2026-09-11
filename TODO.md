@@ -65,10 +65,10 @@
 - [x] Decide the UUID String / ObjectId strategy using the current public string IDs and existing data as compatibility constraints
 - [x] Align Post.comments and Comment.postId types with the chosen ID strategy
 - [x] Align relation refs with registered model names while preserving existing collection mappings
-- [ ] If the chosen strategy changes stored IDs or collection names, prepare and test the required data conversion before switching schemas
-- [ ] Add relation assignment and populate tests for both Post.comments and Comment.postId
+- [x] If the chosen strategy changes stored IDs or collection names, prepare and test the required data conversion before switching schemas (no-op: UUID string _ids and collection names are unchanged; tests/user-database.test.js loads existing UUID records without conversion)
+- [x] Add relation assignment and populate tests for both Post.comments and Comment.postId (tests/relations.test.js)
 - [x] Upgrade uuid and replace legacy uuid/v4 imports, or remove it if the chosen ID strategy no longer needs it
-- [ ] Add database regressions for unique email enforcement, required/enum validation, User timestamps, serialization, and existing records
+- [x] Add database regressions for unique email enforcement, required/enum validation, User timestamps, serialization, and existing records (tests/user-database.test.js)
 
 ### Version upgrades
 

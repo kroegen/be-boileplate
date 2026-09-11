@@ -39,3 +39,5 @@ node_modules/
 src/bin/config.json
 bin/config.json
 #why?
+
+.qwen/tmp/*

@@ -20,6 +20,11 @@ mongoose.connection.on('error', (err) => {
 
 const setUpConnection = async (uri) => {
   const connectionUri = uri || defaultUri;
+  // Mongoose 6 rejects connect() on an active connection with a different
+  // URI (Mongoose 5 tolerated it), so drop any stale connection first.
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect();
+  }
   return mongoose.connect(connectionUri).catch((err) => {
     console.error(`MongoDB connection failed: ${err.message}`);
     process.exit(1);

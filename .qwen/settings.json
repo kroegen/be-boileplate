@@ -39,7 +39,9 @@
       "Bash(/opt/homebrew/bin/mongod *)",
       "Bash(nc *)",
       "Bash(echo *)",
-      "Bash(rm *)"
+      "Bash(rm *)",
+      "Bash(mongod *)",
+      "Bash(ls *)"
     ]
   },
   "$version": 4

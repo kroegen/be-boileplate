@@ -72,8 +72,8 @@
 
 ### Version upgrades
 
-- [ ] Upgrade Mongoose 5 -> 6; resolve version-specific incompatibilities
-- [ ] Run API/database/CLI regressions and commit the Mongoose 6 step separately
+- [x] Upgrade Mongoose 5 -> 6; resolve version-specific incompatibilities
+- [x] Run API/database/CLI regressions and commit the Mongoose 6 step separately
 - [ ] Upgrade Mongoose 6 -> 7; resolve version-specific incompatibilities
 - [ ] Run API/database/CLI regressions and commit the Mongoose 7 step separately
 - [ ] Upgrade Mongoose 7 -> 8; resolve version-specific incompatibilities

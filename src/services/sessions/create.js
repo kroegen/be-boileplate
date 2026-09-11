@@ -1,3 +1,4 @@
+// TODO(architecture): Move request/response handling to the controller and return an application result or error.
 import jwt from 'jsonwebtoken';
 import User from '../../models/User.js';
 import { dumpUser } from '../../utils/index.js';

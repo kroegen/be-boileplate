@@ -1,3 +1,4 @@
+// TODO(architecture): Accept plain input, validate application rules, return data, and leave HTTP responses to the controller.
 import User from '../../models/User.js';
 import { STATUS_SUCCESS } from '../../utils/statusCodes.js';
 import { dumpUser } from '../../utils/dump.js';

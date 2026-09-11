@@ -34,7 +34,11 @@
       "Bash(command *)",
       "Bash(mongosh *)",
       "Bash(which *)",
-      "Bash(brew *)"
+      "Bash(brew *)",
+      "Bash(echo)",
+      "Bash(/opt/homebrew/bin/mongod *)",
+      "Bash(nc *)",
+      "Bash(echo *)"
     ]
   },
   "$version": 4

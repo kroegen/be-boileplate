@@ -1,6 +1,8 @@
 // Error contract for API responses
 // All errors follow this shape to ensure consistency
 
+// TODO(error-handling): Add typed application errors and map them here so services never need HTTP status codes.
+
 const ERROR_TYPES = {
   VALIDATION: 'ValidationError',
   DUPLICATE_KEY: 'DuplicateKeyError',

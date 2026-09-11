@@ -1,3 +1,4 @@
+// TODO(architecture): Return user data to the controller instead of reading req or writing HTTP responses here.
 import User from '../../models/User.js';
 import { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } from '../../utils/statusCodes.js';
 import { dumpUser } from '../../utils/dump.js';

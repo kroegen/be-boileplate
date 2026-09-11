@@ -1,3 +1,4 @@
+// TODO(architecture): Return comment data to the controller instead of reading req or writing HTTP responses here.
 import Comment from '../../models/Comment.js';
 import { STATUS_SUCCESS, STATUS_FAILURE, HTTP_BAD_REQUEST } from '../../utils/statusCodes.js';
 import { dumpComment } from '../../utils/dump.js';

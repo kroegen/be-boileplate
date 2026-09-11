@@ -72,7 +72,11 @@ UserSchema.pre('save', async function userPreSaveHook(next) {
 });
 
 UserSchema.pre('update', function userPreUpdateHook(next) {
-  this.update({}, { $set: { updatedAt: new Date() } });
+  // Decorate the in-flight update document instead of issuing another update:
+  // calling this.update() here would re-enter this hook and recurse.
+  this._update = this._update || {};
+  this._update.$set = this._update.$set || {};
+  this._update.$set.updatedAt = new Date();
 
   next();
 });

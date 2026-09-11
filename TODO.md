@@ -60,7 +60,7 @@
 - [x] Remove mongoose.Promise = global.Promise before the Mongoose 6 upgrade
 - [x] Remove obsolete connection options at the applicable upgrade step, including useNewUrlParser
 - [x] Verify strictQuery behavior against the installed version and set the intended behavior explicitly; test filters with unknown schema paths across upgrades
-- [ ] Remove the unused recursive User pre('update') hook
+- [x] Replace the recursive User pre('update') hook with the non-recursive this._update form, kept as a reference example for the future update service
 - [ ] Remove the redundant async/next pre('save') timestamp hook and verify timestamps remain correct
 - [ ] Decide the UUID String / ObjectId strategy using the current public string IDs and existing data as compatibility constraints
 - [ ] Align Post.comments and Comment.postId types with the chosen ID strategy

@@ -30,7 +30,11 @@
       "Bash(pkill *)",
       "Bash(lsof *)",
       "Bash(timeout *)",
-      "Bash(tail *)"
+      "Bash(tail *)",
+      "Bash(command *)",
+      "Bash(mongosh *)",
+      "Bash(which *)",
+      "Bash(brew *)"
     ]
   },
   "$version": 4

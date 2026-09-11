@@ -12,7 +12,7 @@ const CommentSchema = new mongoose.Schema({
   },
   postId: {
     type: String,
-    ref: 'Post',
+    ref: 'PostModel',
   },
 });
 

@@ -16,7 +16,7 @@ const PostSchema = new mongoose.Schema({
   comments: [
     {
       type: String,
-      ref: 'Comment',
+      ref: 'CommentModel',
     },
   ],
 });

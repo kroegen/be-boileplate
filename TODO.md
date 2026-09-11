@@ -62,9 +62,9 @@
 - [x] Verify strictQuery behavior against the installed version and set the intended behavior explicitly; test filters with unknown schema paths across upgrades
 - [x] Replace the recursive User pre('update') hook with the non-recursive this._update form, kept as a reference example for the future update service
 - [x] Remove the redundant async/next pre('save') timestamp hook and verify timestamps remain correct
-- [ ] Decide the UUID String / ObjectId strategy using the current public string IDs and existing data as compatibility constraints
-- [ ] Align Post.comments and Comment.postId types with the chosen ID strategy
-- [ ] Align relation refs with registered model names while preserving existing collection mappings
+- [x] Decide the UUID String / ObjectId strategy using the current public string IDs and existing data as compatibility constraints
+- [x] Align Post.comments and Comment.postId types with the chosen ID strategy
+- [x] Align relation refs with registered model names while preserving existing collection mappings
 - [ ] If the chosen strategy changes stored IDs or collection names, prepare and test the required data conversion before switching schemas
 - [ ] Add relation assignment and populate tests for both Post.comments and Comment.postId
 - [x] Upgrade uuid and replace legacy uuid/v4 imports, or remove it if the chosen ID strategy no longer needs it
@@ -507,3 +507,96 @@ isolation. No code was changed.
 Maps onto existing later checkboxes: Phase 1 "Make MongoDB connection
 explicit/awaitable", Phase 4 "Remove obsolete connection options" / "Audit
 populate/ref behavior", Phase 5 "Resolve UUID/ObjectId inconsistency".
+
+### Decide the UUID String / ObjectId strategy (2026-09-11)
+
+**Decision: keep UUID v4 String `_id` as the single ID strategy for all
+models.** No schema type changes, no data conversion, and the `uuid`
+dependency stays (it remains the ID generator).
+
+Compatibility constraints that drove the decision:
+
+- **Public string IDs.** Every API response already exposes the schema `_id`
+  as a string: list endpoints via `dump*` (`id: doc._id` in
+  `src/utils/dump.js`) and create endpoints via the raw document `_id`.
+  Client-facing IDs are UUID v4 strings; switching to ObjectId would change
+  the `id` format for new records and invalidate previously issued IDs.
+- **Existing data.** All records in the dev DB (audit fixtures: 2 users,
+  2 posts, 1 comment — see "Record current API behavior") were created by
+  this app, whose `_id` default is `uuidv4` on all three models, so every
+  stored `_id` is a UUID v4 string by construction. An ObjectId schema would
+  throw CastError reading those documents and force a data conversion.
+  Keeping String avoids that. (Dev DB was offline when this was decided —
+  `mongod` not running — but the fixture `_id` shape follows from the
+  schema default, and the audit record documents the fixtures.)
+- **SPEC default exception.** SPEC prefers ObjectId "unless there is a
+  concrete requirement for UUID identifiers"; the two constraints above are
+  that requirement, consistent with SPEC principle 1 (preserve behavior
+  before improving it).
+
+State of the schema at the time of the decision (HEAD):
+
+- `User`, `Post`, and `Comment` all already use
+  `{ type: String, default: uuidv4 }` for `_id`.
+- The previously inconsistent relation paths (`Post.comments`,
+  `Comment.postId`) were already changed from `ObjectId` to `String` in
+  799af15 (ESM compatibility commit), so the schema is now uniformly
+  String-based and matches this decision — no type change required.
+- No other `ObjectId` assumptions remain in `src/` (the only match is a
+  generic comment in `src/utils/errors.js`).
+
+Impact on follow-up Phase 4 items:
+
+- "Align Post.comments and Comment.postId types with the chosen ID strategy"
+  → already aligned (both String); verify-only when reached.
+- "If the chosen strategy changes stored IDs or collection names, prepare
+  and test the required data conversion..." → not applicable: stored IDs
+  and collection names are unchanged.
+- "Upgrade uuid ... or remove it" (done) → `uuid` stays in use.
+- Relation `ref`s (`'Comment'`/`'Post'` vs registered model names
+  `CommentModel`/`PostModel`) are still misaligned; that is handled by the
+  separate "Align relation refs" item, not by this decision.
+
+### Align Post.comments and Comment.postId types (2026-09-11)
+
+Verified already aligned with the chosen UUID v4 String `_id` strategy;
+no code change needed:
+
+- `src/models/Post.js` — `comments: [{ type: String, ref: 'Comment' }]`.
+- `src/models/Comment.js` — `postId: { type: String, ref: 'Post' }`.
+- Both paths became `String` in 799af15 (ESM compatibility commit), so
+  they match the `_id` type on every model.
+- No other `ObjectId` usage remains in `src/` (single grep hit is a
+  generic comment in `src/utils/errors.js`); no `ObjectId` assumptions
+  in `tests/` either.
+- Test suite run as verification is blocked by the dev DB being offline
+  (`ECONNREFUSED 127.0.0.1:27017`, pre-existing environment state) and
+  the smoke tests expect empty collections, so they are not a valid
+  check for this no-code-change verification.
+- `ref` strings are still `'Comment'`/`'Post'` (vs registered
+  `CommentModel`/`PostModel`); that remains the separate "Align relation
+  refs" item.
+
+### Align relation refs with registered model names (2026-09-11)
+
+Aligned the `ref` strings to the registered model names; collection
+mappings are preserved:
+
+- `src/models/Post.js` — `comments` ref: `'Comment'` → `'CommentModel'`.
+- `src/models/Comment.js` — `postId` ref: `'Post'` → `'PostModel'`.
+- Registered model names were left unchanged (`PostModel`/`CommentModel`/
+  `UserModel`), so derived collection names (`postmodels`,
+  `commentmodels`, `usermodels`) — and the existing data in them — are
+  untouched. Renaming the registered models instead would have changed
+  collection names and was rejected for that reason.
+- With the old refs, any `populate('comments')`/`populate('postId')` call
+  would throw a ref-lookup error; no `populate` calls exist in `src/` or
+  `tests/` yet, so this change is inert until the "Add relation assignment
+  and populate tests" item lands, which will exercise it.
+- No `ObjectId`/schema type changes; refs stay `String`-typed per the
+  decided ID strategy.
+- Verification: `npm run lint` passes; API test suite remains blocked by
+  the dev DB being offline (pre-existing environment state).
+- Unrelated pre-existing inconsistency noticed (not touched):
+  `src/bin/add_user.js` drops `collections.users`, which does not match
+  the `UserModel` collection.

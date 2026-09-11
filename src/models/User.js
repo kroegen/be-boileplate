@@ -65,20 +65,4 @@ UserSchema.methods = {
   },
 };
 
-UserSchema.pre('save', async function userPreSaveHook(next) {
-  this.updatedAt = new Date();
-
-  next();
-});
-
-UserSchema.pre('update', function userPreUpdateHook(next) {
-  // Decorate the in-flight update document instead of issuing another update:
-  // calling this.update() here would re-enter this hook and recurse.
-  this._update = this._update || {};
-  this._update.$set = this._update.$set || {};
-  this._update.$set.updatedAt = new Date();
-
-  next();
-});
-
 export default mongoose.model('UserModel', UserSchema);

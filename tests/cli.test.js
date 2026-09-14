@@ -107,18 +107,19 @@ describe('add_user CLI regressions', () => {
     expect(users[0].name).toBe('First');
   }, 30000);
 
-  it('does not persist a user when --role is omitted, because role null fails the enum', async () => {
+  it('applies the default USER role when --role is omitted', async () => {
     const email = uniqueEmail('norole');
-    const { status, stdout, stderr } = await runCli([
+    const { status, stdout } = await runCli([
       `--email=${email}`,
       '--password=secret',
       '--name=No Role',
     ]);
 
-    // The CLI passes role: null and still exits 0 after logging the validation error (known quirk).
     expect(status).toBe(0);
-    expect(stdout).not.toContain('Success!');
-    expect(stderr).toContain('not a valid enum value');
-    expect(await User.findOne({ email })).toBeNull();
+    expect(stdout).toContain('Success!');
+
+    const user = await User.findOne({ email });
+    expect(user).not.toBeNull();
+    expect(user.role).toBe('USER');
   }, 30000);
 });

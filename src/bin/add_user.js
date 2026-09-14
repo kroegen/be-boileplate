@@ -13,7 +13,7 @@ const startCli = async () => {
     email: null,
     password: null,
     name: 'Admin',
-    role: null,
+    role: undefined,
     company: 'default',
     drop: false,
   };

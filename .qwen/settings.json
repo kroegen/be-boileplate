@@ -42,7 +42,11 @@
       "Bash(rm *)",
       "Bash(mongod *)",
       "Bash(ls *)",
-      "Bash(python3 *)"
+      "Bash(python3 *)",
+      "Read(//Users/koegen/Documents/Web/boilerplates/be-boileplate/**)",
+      "Bash(mkdir *)",
+      "Bash(tar *)",
+      "Bash(diff *)"
     ]
   },
   "$version": 4

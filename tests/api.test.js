@@ -3,6 +3,7 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import app from '../src/app.js';
 import { setUpConnection, disconnect } from '../src/mongoose.js';
+import Comment from '../src/models/Comment.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 
@@ -102,13 +103,38 @@ describe('API Smoke Tests', () => {
       expect(res.body.status).toBe(1);
       expect(res.body.data.comment).toMatchObject({
         author: 'Test Author',
+        content: 'Test content',
       });
-      // Note: content is dropped due to missing schema field
+    });
+
+    it('persists submitted content through save, create responses, and list responses', async () => {
+      const content = `Persisted content ${Date.now()}`;
+      const created = await request(app)
+        .post('/api/comments')
+        .send({ author: 'Content Check', content });
+      expect(created.status).toBe(200);
+      expect(created.body.data.comment).toMatchObject({
+        author: 'Content Check',
+        content,
+      });
+
+      const stored = await Comment.findById(created.body.data.comment.id);
+      expect(stored).not.toBeNull();
+      expect(stored.content).toBe(content);
+
+      const res = await request(app).get('/api/comments');
+      expect(res.status).toBe(200);
+      const listed = res.body.data.comments.find(
+        (comment) => comment.id === created.body.data.comment.id
+      );
+      expect(listed).toMatchObject({ author: 'Content Check', content });
     });
 
     it('should return 400 when author is missing', async () => {
       const res = await request(app).post('/api/comments').send({ content: 'Test content' });
-      // Currently this crashes the server, but after fix it should return 400
+      expect(res.status).toBe(400);
+      expect(res.body.status).toBe(0);
+      expect(res.body.data.errors).toBeInstanceOf(Array);
     });
   });
 

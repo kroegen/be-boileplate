@@ -10,6 +10,9 @@ const CommentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  content: {
+    type: String,
+  },
   postId: {
     type: String,
     ref: 'PostModel',

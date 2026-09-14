@@ -86,7 +86,7 @@
 
 - [x] Replace hardcoded status codes (0/1) with constants from utils/statusCodes.js
 - [x] Fix ESM compatibility issues (uuid, mongoose.Schema, statusCodes re-exports)
-- [ ] Add Comment.content to the schema and test that submitted content survives save, create responses, and list responses
+- [x] Add Comment.content to the schema and test that submitted content survives save, create responses, and list responses
 - [ ] Apply the existing post/comment serializers to create responses and test consistency with list response shapes
 - [ ] Decide HTTP status-code changes using the recorded all-200 logical-failure behavior as the compatibility baseline
 - [ ] Apply the agreed status codes and add response-contract tests

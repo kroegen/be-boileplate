@@ -46,7 +46,8 @@
       "Read(//Users/koegen/Documents/Web/boilerplates/be-boileplate/**)",
       "Bash(mkdir *)",
       "Bash(tar *)",
-      "Bash(diff *)"
+      "Bash(diff *)",
+      "Bash(cat *)"
     ]
   },
   "$version": 4

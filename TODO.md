@@ -77,7 +77,7 @@
 - [x] Upgrade Mongoose 6 -> 7; resolve version-specific incompatibilities
 - [x] Run API/database/CLI regressions and commit the Mongoose 7 step separately
 - [x] Upgrade Mongoose 7 -> 8; resolve version-specific incompatibilities
-- [ ] Run API/database/CLI regressions and commit the Mongoose 8 step separately
+- [x] Run API/database/CLI regressions and commit the Mongoose 8 step separately
 - [ ] Upgrade Mongoose 8 -> 9; resolve version-specific incompatibilities
 - [ ] Run API/database/CLI regressions and commit the Mongoose 9 step separately
 - [ ] Review the audit delta for the Mongoose and uuid dependency trees

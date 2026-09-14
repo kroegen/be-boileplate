@@ -79,6 +79,21 @@ describe('API Smoke Tests', () => {
       });
     });
 
+    it('should return a serialized post matching the list item shape', async () => {
+      const created = await request(app)
+        .post('/api/posts')
+        .send({ author: 'Contract Author', content: 'Contract content' });
+      expect(created.status).toBe(200);
+      expect(created.body.status).toBe(1);
+      expect(created.body.data.post.id).toEqual(expect.any(String));
+      expect(Object.keys(created.body.data.post).sort()).toEqual(['author', 'content', 'id']);
+
+      const res = await request(app).get('/api/posts');
+      expect(res.status).toBe(200);
+      const listed = res.body.data.posts.find((post) => post.id === created.body.data.post.id);
+      expect(listed).toEqual(created.body.data.post);
+    });
+
     it('should return 400 when author is missing', async () => {
       const res = await request(app).post('/api/posts').send({ content: 'Test content' });
       // Currently this crashes the server, but after fix it should return 400
@@ -95,7 +110,7 @@ describe('API Smoke Tests', () => {
   });
 
   describe('POST /api/comments', () => {
-    it('should return 200 with comment data when creating a new comment', async () => {
+    it('should return 200 with serialized comment data when creating a new comment', async () => {
       const res = await request(app)
         .post('/api/comments')
         .send({ author: 'Test Author', content: 'Test content' });
@@ -105,6 +120,8 @@ describe('API Smoke Tests', () => {
         author: 'Test Author',
         content: 'Test content',
       });
+      expect(res.body.data.comment.id).toEqual(expect.any(String));
+      expect(Object.keys(res.body.data.comment).sort()).toEqual(['author', 'content', 'id']);
     });
 
     it('persists submitted content through save, create responses, and list responses', async () => {
@@ -128,6 +145,23 @@ describe('API Smoke Tests', () => {
         (comment) => comment.id === created.body.data.comment.id
       );
       expect(listed).toMatchObject({ author: 'Content Check', content });
+    });
+
+    it('should return a serialized comment matching the list item shape', async () => {
+      const created = await request(app)
+        .post('/api/comments')
+        .send({ author: 'Contract Author', content: 'Contract content' });
+      expect(created.status).toBe(200);
+      expect(created.body.status).toBe(1);
+      expect(created.body.data.comment.id).toEqual(expect.any(String));
+      expect(Object.keys(created.body.data.comment).sort()).toEqual(['author', 'content', 'id']);
+
+      const res = await request(app).get('/api/comments');
+      expect(res.status).toBe(200);
+      const listed = res.body.data.comments.find(
+        (comment) => comment.id === created.body.data.comment.id
+      );
+      expect(listed).toEqual(created.body.data.comment);
     });
 
     it('should return 400 when author is missing', async () => {

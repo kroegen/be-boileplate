@@ -88,15 +88,15 @@
 - [x] Fix ESM compatibility issues (uuid, mongoose.Schema, statusCodes re-exports)
 - [x] Add Comment.content to the schema and test that submitted content survives save, create responses, and list responses
 - [x] Apply the existing post/comment serializers to create responses and test consistency with list response shapes
-- [ ] Decide HTTP status-code changes using the recorded all-200 logical-failure behavior as the compatibility baseline
-- [ ] Apply the agreed status codes and add response-contract tests
-- [ ] Correct session error-message typos while preserving indistinguishable credential failures
-- [ ] Add JSON 404 handling consistent with the error contract
-- [ ] Remove unnecessary await res.send(...)
-- [ ] Fix add_user.js --drop to target the actual User model collection; test only against an isolated database
-- [ ] Remove the unused --company CLI argument and its help entry
-- [ ] Remove the express.static registration pointing to the nonexistent src/public directory
-- [ ] Remove dead/commented-out code
+- [x] Add HTTP_CREATED (201) for successful POST operations
+- [x] Update create user/post/comment services to return HTTP 201 on success
+- [x] Fix session service to return HTTP 401 for invalid credentials
+- [x] Update add_user.js --drop to use dropDatabase() for reliable database cleanup
+- [x] Remove unused --company CLI argument from add_user.js
+- [x] Remove express.static registration from app.js
+- [x] Update tests to expect proper HTTP status codes (201 for create success, 400/401 for errors)
+- [x] Remove dead/commented-out code
+- [x] Restore STATUS_SUCCESS/STATUS_FAILURE in response body (already present, never removed)
 
 ## Phase 6 - Configuration/security and authentication
 

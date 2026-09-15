@@ -28,11 +28,11 @@ describe('API Smoke Tests', () => {
   });
 
   describe('POST /api/users', () => {
-    it('should return 200 with user data when creating a new user', async () => {
+    it('should return 201 with user data when creating a new user', async () => {
       const res = await request(app)
         .post('/api/users')
         .send({ name: 'Test User', email: `test-${Date.now()}@example.com` });
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.user).toMatchObject({
         name: 'Test User',
@@ -46,7 +46,7 @@ describe('API Smoke Tests', () => {
       const res = await request(app)
         .post('/api/users')
         .send({ name: 'Security Test', email: `security-${Date.now()}@example.com` });
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.data.user).not.toHaveProperty('passwordHash');
       expect(res.body.data.user).not.toHaveProperty('salt');
     });
@@ -67,11 +67,11 @@ describe('API Smoke Tests', () => {
   });
 
   describe('POST /api/posts', () => {
-    it('should return 200 with post data when creating a new post', async () => {
+    it('should return 201 with post data when creating a new post', async () => {
       const res = await request(app)
         .post('/api/posts')
         .send({ author: 'Test Author', content: 'Test content' });
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.post).toMatchObject({
         author: 'Test Author',
@@ -83,7 +83,7 @@ describe('API Smoke Tests', () => {
       const created = await request(app)
         .post('/api/posts')
         .send({ author: 'Contract Author', content: 'Contract content' });
-      expect(created.status).toBe(200);
+      expect(created.status).toBe(201);
       expect(created.body.status).toBe(1);
       expect(created.body.data.post.id).toEqual(expect.any(String));
       expect(Object.keys(created.body.data.post).sort()).toEqual(['author', 'content', 'id']);
@@ -96,7 +96,7 @@ describe('API Smoke Tests', () => {
 
     it('should return 400 when author is missing', async () => {
       const res = await request(app).post('/api/posts').send({ content: 'Test content' });
-      // Currently this crashes the server, but after fix it should return 400
+      expect(res.status).toBe(400);
     });
   });
 
@@ -110,11 +110,11 @@ describe('API Smoke Tests', () => {
   });
 
   describe('POST /api/comments', () => {
-    it('should return 200 with serialized comment data when creating a new comment', async () => {
+    it('should return 201 with serialized comment data when creating a new comment', async () => {
       const res = await request(app)
         .post('/api/comments')
         .send({ author: 'Test Author', content: 'Test content' });
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.comment).toMatchObject({
         author: 'Test Author',
@@ -129,7 +129,7 @@ describe('API Smoke Tests', () => {
       const created = await request(app)
         .post('/api/comments')
         .send({ author: 'Content Check', content });
-      expect(created.status).toBe(200);
+      expect(created.status).toBe(201);
       expect(created.body.data.comment).toMatchObject({
         author: 'Content Check',
         content,
@@ -151,7 +151,7 @@ describe('API Smoke Tests', () => {
       const created = await request(app)
         .post('/api/comments')
         .send({ author: 'Contract Author', content: 'Contract content' });
-      expect(created.status).toBe(200);
+      expect(created.status).toBe(201);
       expect(created.body.status).toBe(1);
       expect(created.body.data.comment.id).toEqual(expect.any(String));
       expect(Object.keys(created.body.data.comment).sort()).toEqual(['author', 'content', 'id']);
@@ -182,11 +182,11 @@ describe('API Smoke Tests', () => {
       // This endpoint exists but requires password handling which is Phase 6
     });
 
-    it('should return 200 with status:0 for invalid credentials', async () => {
+    it('should return 401 with status:0 for invalid credentials', async () => {
       const res = await request(app)
         .post('/api/sessions')
         .send({ email: 'invalid@example.com', password: 'wrong' });
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(401);
       expect(res.body.status).toBe(0);
       expect(res.body.data.errors).toBeInstanceOf(Array);
     });

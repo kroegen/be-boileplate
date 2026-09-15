@@ -98,8 +98,7 @@ describe('add_user CLI regressions', () => {
       '--role=USER',
     ]);
 
-    // The CLI logs the duplicate-key error but still exits 0 (known quirk).
-    expect(status).toBe(0);
+    expect(status).toBe(1);
     expect(stderr).toContain('duplicate key');
 
     const users = await User.find({ email });

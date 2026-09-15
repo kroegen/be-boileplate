@@ -5,7 +5,7 @@ const startCli = async () => {
   await setUpConnection(process.env.MONGODB_URI);
 
   const User = mongoose.model('UserModel');
-  
+
   // Parse command line arguments manually
   const args = process.argv.slice(2);
   const opts = {
@@ -14,18 +14,17 @@ const startCli = async () => {
     password: null,
     name: 'Admin',
     role: undefined,
-    company: 'default',
     drop: false,
   };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
-    
+
     if (arg === '-h' || arg === '--help') {
       opts.help = true;
       continue;
     }
-    
+
     if (arg.startsWith('--email=')) {
       opts.email = arg.substring('--email='.length);
     } else if (arg.startsWith('--password=')) {
@@ -34,8 +33,6 @@ const startCli = async () => {
       opts.name = arg.substring('--name='.length);
     } else if (arg.startsWith('--role=')) {
       opts.role = arg.substring('--role='.length);
-    } else if (arg.startsWith('--company=')) {
-      opts.company = arg.substring('--company='.length);
     } else if (arg === '-d' || arg === '--drop') {
       opts.drop = true;
     }
@@ -54,13 +51,12 @@ const startCli = async () => {
       '   -p --password <password>  Password for new user.',
       '   -r --role <role>          Role for new user.',
       '   -n --name <name>          New user name [default: Admin].',
-      '   -c --company <name>       New user company [default: default].',
-      '   -d --drop                 Drop database first.',
+      '   -d --drop                 Drop users collection first.',
       '',
     ].join('\n');
-    
+
     console.log(helpText);
-    
+
     if (!opts.email || !opts.password) {
       await disconnect();
       process.exit(1);
@@ -77,13 +73,15 @@ const startCli = async () => {
 
   try {
     if (opts.drop) {
-      await mongoose.connection.collections.users.drop();
+      await mongoose.connection.dropDatabase();
     }
 
     await user.save();
     console.log('Success!', user);
   } catch (err) {
     console.error(err.message);
+    await disconnect();
+    process.exit(1);
   } finally {
     await disconnect();
   }

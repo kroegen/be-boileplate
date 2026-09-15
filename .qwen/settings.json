@@ -1,11 +1,6 @@
 {
   "permissions": {
-    "deny": [
-      "Bash(git commit)",
-      "Bash(git commit *)",
-      "Bash(git push)",
-      "Bash(git push *)"
-    ],
+    "deny": ["Bash(git commit)", "Bash(git commit *)", "Bash(git push)", "Bash(git push *)"],
     "allow": [
       "Bash(git *)",
       "Bash(npm install *)",

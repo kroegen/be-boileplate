@@ -3,6 +3,8 @@
 
 // TODO(error-handling): Add typed application errors and map them here so services never need HTTP status codes.
 
+import { STATUS_FAILURE } from './statusCodes.js';
+
 const ERROR_TYPES = {
   VALIDATION: 'ValidationError',
   DUPLICATE_KEY: 'DuplicateKeyError',
@@ -24,7 +26,7 @@ const ERROR_MESSAGES = {
 // Error response envelope
 function createErrorResponse(error, type, message, statusCode) {
   return {
-    status: 0,
+    status: STATUS_FAILURE,
     data: {
       errors: [
         {

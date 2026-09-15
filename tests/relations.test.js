@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import mongoose from 'mongoose';
-import { setUpConnection, disconnect } from '../src/mongoose.js';
-import Post from '../src/models/Post.js';
-import Comment from '../src/models/Comment.js';
+import { setUpConnection, disconnect } from '#src/mongoose.js';
+import Post from '#src/models/Post.js';
+import Comment from '#src/models/Comment.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 const relationsDbUri = testDbUri.replace(/\/[^/]+$/, '/be-boilerplate-relations');

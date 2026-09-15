@@ -1,7 +1,7 @@
 // TODO(architecture): Return comment data to the controller instead of reading req or writing HTTP responses here.
-import Comment from '../../models/Comment.js';
-import { HTTP_OK, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
-import { dumpComment } from '../../utils/dump.js';
+import Comment from '#src/models/Comment.js';
+import { HTTP_OK, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import { dumpComment } from '#src/utils/dump.js';
 
 export const getComments = async (req, res) => {
   try {

@@ -1,7 +1,7 @@
 // TODO(architecture): Accept plain input, validate application rules, return data, and leave HTTP responses to the controller.
-import User from '../../models/User.js';
-import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
-import { dumpUser } from '../../utils/dump.js';
+import User from '#src/models/User.js';
+import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import { dumpUser } from '#src/utils/dump.js';
 
 export const createUser = async (req, res) => {
   const { name, email } = req.body;

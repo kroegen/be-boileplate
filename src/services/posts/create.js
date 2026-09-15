@@ -1,7 +1,7 @@
 // TODO(architecture): Accept plain input, validate application rules, return data, and leave HTTP responses to the controller.
-import Post from '../../models/Post.js';
-import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
-import { dumpPost } from '../../utils/dump.js';
+import Post from '#src/models/Post.js';
+import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import { dumpPost } from '#src/utils/dump.js';
 
 export const createPost = async (req, res) => {
   const { author, content } = req.body;

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
-import { mongoose, setUpConnection, disconnect } from '../mongoose.js';
+import { mongoose, setUpConnection, disconnect } from '#src/mongoose.js';
 
 const startCli = async () => {
   await setUpConnection(process.env.MONGODB_URI);

@@ -42,7 +42,10 @@
       "Bash(mkdir *)",
       "Bash(tar *)",
       "Bash(diff *)",
-      "Bash(cat *)"
+      "Bash(cat *)",
+      "Bash(eof)",
+      "Bash(chmod *)",
+      "Bash(find *)"
     ]
   },
   "$version": 4

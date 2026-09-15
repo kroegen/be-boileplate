@@ -1,7 +1,7 @@
 // TODO(architecture): Return post data to the controller instead of reading req or writing HTTP responses here.
-import Post from '../../models/Post.js';
-import { HTTP_OK, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
-import { dumpPost } from '../../utils/dump.js';
+import Post from '#src/models/Post.js';
+import { HTTP_OK, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import { dumpPost } from '#src/utils/dump.js';
 
 export const getPosts = async (req, res) => {
   try {

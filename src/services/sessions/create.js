@@ -1,9 +1,9 @@
 // TODO(architecture): Move request/response handling to the controller and return an application result or error.
 import jwt from 'jsonwebtoken';
-import User from '../../models/User.js';
-import { dumpUser } from '../../utils/index.js';
-import config from '../../bin/config.json' with { type: 'json' };
-import { HTTP_OK, HTTP_BAD_REQUEST, HTTP_UNAUTHORIZED, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
+import User from '#src/models/User.js';
+import { dumpUser } from '#src/utils/index.js';
+import config from '#src/bin/config.json' with { type: 'json' };
+import { HTTP_OK, HTTP_BAD_REQUEST, HTTP_UNAUTHORIZED, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 

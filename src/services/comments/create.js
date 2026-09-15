@@ -1,7 +1,7 @@
 // TODO(architecture): Accept plain input, validate application rules, return data, and leave HTTP responses to the controller.
-import Comment from '../../models/Comment.js';
-import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '../../utils/statusCodes.js';
-import { dumpComment } from '../../utils/dump.js';
+import Comment from '#src/models/Comment.js';
+import { HTTP_CREATED, HTTP_BAD_REQUEST, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import { dumpComment } from '#src/utils/dump.js';
 
 export const createComment = async (req, res) => {
   const { author, content } = req.body;

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
 
-import config from '../bin/config.json' with { type: 'json' };
+import config from '#src/bin/config.json' with { type: 'json' };
 
 // Export Schema for models that need it
 const Schema = mongoose.Schema;

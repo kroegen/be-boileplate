@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import mongoose from 'mongoose';
-import { setUpConnection, disconnect } from '../src/mongoose.js';
-import User from '../src/models/User.js';
-import { dumpUser } from '../src/utils/dump.js';
+import { setUpConnection, disconnect } from '#src/mongoose.js';
+import User from '#src/models/User.js';
+import { dumpUser } from '#src/utils/dump.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 const userDbUri = testDbUri.replace(/\/[^/]+$/, '/be-boilerplate-user-regression');

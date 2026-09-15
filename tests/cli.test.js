@@ -3,8 +3,8 @@ import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
-import { setUpConnection, disconnect } from '../src/mongoose.js';
-import User from '../src/models/User.js';
+import { setUpConnection, disconnect } from '#src/mongoose.js';
+import User from '#src/models/User.js';
 
 const execFileAsync = promisify(execFile);
 const cliScript = fileURLToPath(new URL('../src/bin/add_user.js', import.meta.url));

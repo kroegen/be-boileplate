@@ -1,6 +1,6 @@
 import express from 'express';
-import { asyncHandler } from '../utils/errors.js';
-import { list, create } from '../controllers/users.js';
+import { asyncHandler } from '#src/utils/errors.js';
+import { list, create } from '#src/controllers/users.js';
 
 const users = express.Router();
 

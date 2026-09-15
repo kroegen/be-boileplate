@@ -12,18 +12,22 @@ export default [
       'src/services/sessions/create.js',
     ],
   },
-  // ESM files (services, tests, config)
+  // ESM files (src, services, tests, config)
   {
-    files: ['src/services/**/*.js', 'tests/**/*.js', '*.js', 'vitest.config.js'],
+    files: ['src/**/*.js', 'tests/**/*.js', '*.js', 'vitest.config.js'],
     languageOptions: {
-      ecmaVersion: 2024,
+      ecmaVersion: 2025,
       sourceType: 'module',
       globals: globals.node,
     },
     rules: {
       'no-console': 'warn',
       'no-debugger': 'warn',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-unused-vars': ['error', {
+        argsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_'
+      }],
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'prefer-const': 'off',

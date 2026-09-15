@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use('/api', router);
 
 // Centralized error handler - must be last
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   const errorResponse = handleError(err);
   res.status(errorResponse.statusCode).json(errorResponse);
 });

@@ -59,7 +59,7 @@ UserSchema.methods = {
   encryptPassword(password) {
     try {
       return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-    } catch (err) {
+    } catch (_err) {
       return '';
     }
   },

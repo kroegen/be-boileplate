@@ -101,9 +101,9 @@
 ## Phase 6 - Configuration/security and authentication
 
 - [x] Replace config.json with environment variables shared by the server and CLI, including an explicit MongoDB URI
-- [ ] Move the hardcoded JWT secret to required environment configuration
-- [ ] Validate environment at startup for both server and CLI
-- [ ] Add .env.example without real secrets
+- [x] Move the hardcoded JWT secret to required environment configuration
+- [x] Validate environment at startup for both server and CLI
+- [x] Add .env.example without real secrets
 - [ ] Define how existing SHA1-HMAC credentials and users with empty password hashes will transition to Argon2id
 - [ ] Replace SHA1-HMAC and the predictable makeSalt implementation with Argon2id using the agreed credential transition
 - [ ] Make API user creation accept and hash passwords through the shared credential logic

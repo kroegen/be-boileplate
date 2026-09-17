@@ -45,7 +45,9 @@
       "Bash(cat *)",
       "Bash(eof)",
       "Bash(chmod *)",
-      "Bash(find *)"
+      "Bash(find *)",
+      "Agent(reviewer)",
+      "Agent(scout)"
     ]
   },
   "$version": 4

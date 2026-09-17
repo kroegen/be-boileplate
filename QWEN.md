@@ -1,31 +1,37 @@
 ## Verification and review
 
-Do not run tests or perform a separate review pass.
+Do not run tests or perform a separate self-review.
 
-Testing and review are handled by the small support agent after implementation.
+Testing and review are handled by the `reviewer` subagent.
 
-After implementing the requested work:
+After implementing requested work:
 
-1. Do not run tests.
+1. Do not run tests yourself.
 2. Do not perform a self-review.
 3. Do not mark TODO checkbox(es) complete yet.
-4. Summarize the implementation in no more than 5 bullets.
-5. Stop and wait for external review.
+4. Summarize the implementation internally.
+5. MUST call the `agent` tool with `subagent_type: "reviewer"`.
+6. Wait for the reviewer result.
 
-When asked to process a small-agent review:
+If the reviewer returns `ISSUES:`:
 
-- Read `.local-ai/SMALL_AGENT_HANDOFF.md`.
-- Verify reported issues against the repository before changing code.
-- Fix only valid blocking issues.
-- Do not run tests yourself.
-- Stop after fixes so the small agent can review again.
+1. Verify each reported issue against the repository.
+2. Fix only valid issues.
+3. Do not run tests yourself.
+4. MUST call the `reviewer` subagent again after the fixes.
+5. Repeat this review/fix cycle until the reviewer returns `PASS`.
 
-If the handoff contains:
+If the reviewer returns `PASS`:
 
-`Mode: Review`
-`Result: PASS`
+1. Mark the reviewed TODO checkbox(es) complete.
+2. Make no additional implementation changes.
+3. Give the final implementation summary in no more than 5 bullets.
+4. Stop.
 
-then:
-- mark the reviewed TODO checkbox(es) complete
-- make no other implementation changes
-- stop.
+Do not ask the user whether to fix reviewer findings.
+
+Do not stop after saying that the reviewer will review the changes.
+
+The task is not complete until the `reviewer` subagent has actually returned `PASS`.
+
+If the reviewer subagent cannot be started or returns a technical error, stop and report that error instead of pretending review completed.

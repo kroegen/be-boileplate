@@ -104,11 +104,15 @@
 - [x] Move the hardcoded JWT secret to required environment configuration
 - [x] Validate environment at startup for both server and CLI
 - [x] Add .env.example without real secrets
-- [ ] Define how existing SHA1-HMAC credentials and users with empty password hashes will transition to Argon2id
-- [ ] Replace SHA1-HMAC and the predictable makeSalt implementation with Argon2id using the agreed credential transition
-- [ ] Make API user creation accept and hash passwords through the shared credential logic
-- [ ] Resolve the write-only password virtual and non-schema _password storage according to the credential design
-- [ ] Verify API-created and CLI-created users can log in, including credential-transition and invalid-password cases
+- [x] Confirm this fresh boilerplate has no existing credentials to migrate; reject login for users without a password
+- [x] Add argon2 to package.json and the lockfile
+- [x] Replace SHA1-HMAC and the predictable makeSalt implementation with Argon2id
+- [x] Make API user creation accept and hash optional passwords through the shared credential logic
+- [x] Keep the password virtual write-only and hold pending plaintext in Mongoose $locals until save
+- [x] Await async password verification in the session service so invalid passwords and empty hashes return 401
+- [x] Remove the unused legacy and bulk migration paths; password changes rehash new Argon2id credentials
+- [x] Verify API-created and CLI-created users can log in, including invalid-password cases
+- [x] Update existing password-check tests to await checkPassword and add session regressions for valid, invalid, and empty-hash credentials
 - [ ] Define which routes require JWT authentication and their unauthenticated/expired-token behavior
 - [ ] Add JWT verification middleware to the agreed routes; tokens currently have no consumer
 - [ ] Add tests for missing, invalid, expired, and valid tokens

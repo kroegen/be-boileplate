@@ -2,7 +2,13 @@
 import jwt from 'jsonwebtoken';
 import User from '#src/models/User.js';
 import { dumpUser } from '#src/utils/index.js';
-import { HTTP_OK, HTTP_BAD_REQUEST, HTTP_UNAUTHORIZED, STATUS_SUCCESS, STATUS_FAILURE } from '#src/utils/statusCodes.js';
+import {
+  HTTP_OK,
+  HTTP_BAD_REQUEST,
+  HTTP_UNAUTHORIZED,
+  STATUS_SUCCESS,
+  STATUS_FAILURE,
+} from '#src/utils/statusCodes.js';
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 
@@ -25,7 +31,7 @@ export const createSession = async (req, res, next) => {
 
     const user = await User.findOne({ email });
 
-    if (user && user.checkPassword(password)) {
+    if (user && user.status === 'ACTIVE' && (await user.checkPassword(password))) {
       const token = jwt.sign(dumpUser(user), process.env.JWT_SECRET, {
         expiresIn: TOKEN_EXPIRY_MS,
       });

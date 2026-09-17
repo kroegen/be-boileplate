@@ -1,6 +1,6 @@
 import { mongoose } from '#src/mongoose.js';
-import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
+import { hashPassword, verifyPassword } from '#src/utils/auth.js';
 
 const UserSchema = new mongoose.Schema(
   {
@@ -17,10 +17,6 @@ const UserSchema = new mongoose.Schema(
       index: { unique: true },
     },
     passwordHash: {
-      type: String,
-      default: '',
-    },
-    salt: {
       type: String,
       default: '',
     },
@@ -42,27 +38,20 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.virtual('password').set(function setHash(password) {
-  this._password = password;
-  this.salt = this.makeSalt();
-  this.passwordHash = this.encryptPassword(password);
+  this.$locals.password = password;
 });
 
 UserSchema.methods = {
-  checkPassword(plainText) {
-    return this.encryptPassword(plainText) === this.passwordHash;
-  },
-
-  makeSalt() {
-    return `${Math.round(new Date().valueOf() * Math.random())}`;
-  },
-
-  encryptPassword(password) {
-    try {
-      return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-    } catch (_err) {
-      return '';
-    }
+  async checkPassword(plainText) {
+    return verifyPassword(plainText, this.passwordHash);
   },
 };
+
+UserSchema.pre('save', async function () {
+  if (this.$locals.password !== undefined) {
+    this.passwordHash = await hashPassword(this.$locals.password);
+    delete this.$locals.password;
+  }
+});
 
 export default mongoose.model('UserModel', UserSchema);

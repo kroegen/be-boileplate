@@ -8,3 +8,4 @@ export {
   HTTP_NOT_FOUND,
   HTTP_INTERNAL_ERROR,
 } from './statusCodes.js';
+export { isArgon2idHash, hashPassword, verifyPassword } from './auth.js';

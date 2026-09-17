@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import app from '#src/app.js';
 import { setUpConnection, disconnect } from '#src/mongoose.js';
 import Comment from '#src/models/Comment.js';
+import User from '#src/models/User.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 
@@ -54,6 +55,15 @@ describe('API Smoke Tests', () => {
     it('should return 400 when email is missing', async () => {
       const res = await request(app).post('/api/users').send({ name: 'Test User' });
       expect(res.status).toBe(400);
+    });
+
+    it('should reject an explicitly empty password', async () => {
+      const res = await request(app)
+        .post('/api/users')
+        .send({ name: 'Empty Password', email: `empty-${Date.now()}@example.com`, password: '' });
+
+      expect(res.status).toBe(400);
+      expect(res.body.status).toBe(0);
     });
   });
 
@@ -173,13 +183,44 @@ describe('API Smoke Tests', () => {
   });
 
   describe('POST /api/sessions', () => {
-    it('should return 200 with token for valid credentials', async () => {
-      // First create a user with known credentials
-      const email = `session-test-${Date.now()}@example.com`;
-      await request(app).post('/api/users').send({ name: 'Session Test', email });
+    const originalJwtSecret = process.env.JWT_SECRET;
 
-      // Note: API doesn't accept password, so we can't test login yet
-      // This endpoint exists but requires password handling which is Phase 6
+    beforeAll(() => {
+      process.env.JWT_SECRET = 'session-test-secret';
+    });
+
+    afterAll(() => {
+      if (originalJwtSecret === undefined) {
+        delete process.env.JWT_SECRET;
+      } else {
+        process.env.JWT_SECRET = originalJwtSecret;
+      }
+    });
+
+    it('should return 200 with token for valid credentials', async () => {
+      const email = `session-test-${Date.now()}@example.com`;
+      const created = await request(app)
+        .post('/api/users')
+        .send({ name: 'Session Test', email, password: 'correct-password' });
+
+      expect(created.status).toBe(201);
+      expect(created.body.data.user).not.toHaveProperty('passwordHash');
+      expect(created.body.data.user).not.toHaveProperty('salt');
+
+      const res = await request(app)
+        .post('/api/sessions')
+        .send({ email, password: 'correct-password' });
+
+      expect(res.status).toBe(200);
+      expect(res.body.status).toBe(1);
+      expect(res.body.data.token).toEqual(expect.any(String));
+
+      const invalid = await request(app)
+        .post('/api/sessions')
+        .send({ email, password: 'wrong-password' });
+
+      expect(invalid.status).toBe(401);
+      expect(invalid.body.status).toBe(0);
     });
 
     it('should return 401 with status:0 for invalid credentials', async () => {
@@ -189,6 +230,33 @@ describe('API Smoke Tests', () => {
       expect(res.status).toBe(401);
       expect(res.body.status).toBe(0);
       expect(res.body.data.errors).toBeInstanceOf(Array);
+    });
+
+    it('should reject users without a password', async () => {
+      const email = `no-password-${Date.now()}@example.com`;
+      await request(app).post('/api/users').send({ name: 'No Password', email });
+
+      const res = await request(app)
+        .post('/api/sessions')
+        .send({ email, password: 'any-password' });
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should reject blocked users', async () => {
+      const email = `blocked-${Date.now()}@example.com`;
+      await new User({
+        name: 'Blocked',
+        email,
+        password: 'correct-password',
+        status: 'BLOCKED',
+      }).save();
+
+      const res = await request(app)
+        .post('/api/sessions')
+        .send({ email, password: 'correct-password' });
+
+      expect(res.status).toBe(401);
     });
   });
 });

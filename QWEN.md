@@ -9,17 +9,22 @@ After implementing requested work:
 1. Do not run tests yourself.
 2. Do not perform a self-review.
 3. Do not mark TODO checkbox(es) complete yet.
-4. Summarize the implementation internally.
-5. MUST call the `agent` tool with `subagent_type: "reviewer"`.
-6. Wait for the reviewer result.
+4. Call the `agent` tool with:
+   - `subagent_type: "reviewer"`
+   - `run_in_background: false`
+5. Wait for the reviewer result inline.
+6. Do not call `list_agents` while waiting.
 
 If the reviewer returns `ISSUES:`:
 
 1. Verify each reported issue against the repository.
 2. Fix only valid issues.
 3. Do not run tests yourself.
-4. MUST call the `reviewer` subagent again after the fixes.
-5. Repeat this review/fix cycle until the reviewer returns `PASS`.
+4. Start a NEW foreground `reviewer` run using `run_in_background: false`.
+5. Repeat until the reviewer returns `PASS`.
+6. Maximum 3 review/fix cycles.
+
+If issues remain after 3 review cycles, stop and report them to the user.
 
 If the reviewer returns `PASS`:
 
@@ -30,8 +35,26 @@ If the reviewer returns `PASS`:
 
 Do not ask the user whether to fix reviewer findings.
 
-Do not stop after saying that the reviewer will review the changes.
+Do not say that the reviewer will review the changes and then stop. Actually call the reviewer.
 
-The task is not complete until the `reviewer` subagent has actually returned `PASS`.
+Do not poll `list_agents`.
 
-If the reviewer subagent cannot be started or returns a technical error, stop and report that error instead of pretending review completed.
+If the reviewer cannot start or returns a technical error, stop and report the error.
+
+## Scout workflow
+
+When the user asks to work on the next TODO:
+
+1. If a completed scout result for the next TODO is already available, use it.
+2. Otherwise call the `scout` subagent and wait for its result.
+3. Immediately implement the returned task.
+4. Do not ask the user for confirmation.
+5. Continue automatically into the reviewer workflow.
+
+While implementing the current TODO, once the current task is known:
+
+1. Start the `scout` subagent in the background to prepare the TODO after the current one.
+2. Explicitly tell the scout which current TODO to exclude.
+3. Continue implementing the current task immediately.
+4. Do not poll `list_agents`.
+5. Let the scout completion notification arrive asynchronously.

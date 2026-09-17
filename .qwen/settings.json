@@ -47,7 +47,8 @@
       "Bash(chmod *)",
       "Bash(find *)",
       "Agent(reviewer)",
-      "Agent(scout)"
+      "Agent(scout)",
+      "Bash(ln *)"
     ]
   },
   "$version": 4

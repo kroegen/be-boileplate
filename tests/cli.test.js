@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import { setUpConnection, disconnect } from '#src/mongoose.js';
 import User from '#src/models/User.js';
+import { isArgon2idHash } from '#src/utils/auth.js';
 
 const execFileAsync = promisify(execFile);
 const cliScript = fileURLToPath(new URL('../src/bin/add_user.js', import.meta.url));
@@ -75,10 +76,9 @@ describe('add_user CLI regressions', () => {
     expect(user.name).toBe('CLI User');
     expect(user.role).toBe('ADMIN');
     expect(user.status).toBe('ACTIVE');
-    expect(user.salt).not.toBe('');
-    expect(user.passwordHash).not.toBe('');
-    expect(user.checkPassword('cli-secret')).toBe(true);
-    expect(user.checkPassword('wrong-password')).toBe(false);
+    expect(isArgon2idHash(user.passwordHash)).toBe(true);
+    expect(await user.checkPassword('cli-secret')).toBe(true);
+    expect(await user.checkPassword('wrong-password')).toBe(false);
   }, 30000);
 
   it('does not persist a second user with the same email', async () => {

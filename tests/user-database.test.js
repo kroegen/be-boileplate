@@ -1,9 +1,9 @@
-import crypto from 'crypto';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import mongoose from 'mongoose';
 import { setUpConnection, disconnect } from '#src/mongoose.js';
 import User from '#src/models/User.js';
 import { dumpUser } from '#src/utils/dump.js';
+import { hashPassword, isArgon2idHash } from '#src/utils/auth.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 const userDbUri = testDbUri.replace(/\/[^/]+$/, '/be-boilerplate-user-regression');
@@ -69,7 +69,7 @@ describe('User database regressions', () => {
 
     expect(typeof user.id).toBe('string');
     expect(user.id).toBe(user._id);
-    expect(user.checkPassword('secret')).toBe(true);
+    expect(await user.checkPassword('secret')).toBe(true);
 
     const dump = dumpUser(user);
     expect(dump).toEqual({
@@ -86,17 +86,15 @@ describe('User database regressions', () => {
   });
 
   it('loads pre-existing records written with UUID string _id without conversion', async () => {
-    const legacyId = '11111111-2222-3333-4444-555555555555';
-    const email = uniqueEmail('legacy');
-    const salt = 'legacy-salt';
-    const passwordHash = crypto.createHmac('sha1', salt).update('legacy-pass').digest('hex');
+    const existingId = '11111111-2222-3333-4444-555555555555';
+    const email = uniqueEmail('existing');
+    const passwordHash = await hashPassword('existing-pass');
 
     await mongoose.connection.collection(User.collection.name).insertOne({
-      _id: legacyId,
-      name: 'Legacy',
+      _id: existingId,
+      name: 'Existing',
       email,
       passwordHash,
-      salt,
       role: 'USER',
       status: 'ACTIVE',
       createdAt: new Date('2020-01-01T00:00:00Z'),
@@ -105,9 +103,10 @@ describe('User database regressions', () => {
 
     const found = await User.findOne({ email });
 
-    expect(found._id).toBe(legacyId);
+    expect(found._id).toBe(existingId);
     expect(found.email).toBe(email);
-    expect(found.checkPassword('legacy-pass')).toBe(true);
-    expect(found.checkPassword('wrong-password')).toBe(false);
+    expect(isArgon2idHash(found.passwordHash)).toBe(true);
+    expect(await found.checkPassword('existing-pass')).toBe(true);
+    expect(await found.checkPassword('wrong-password')).toBe(false);
   });
 });

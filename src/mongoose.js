@@ -1,8 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
 
-import config from '#src/bin/config.json' with { type: 'json' };
-
 // Export Schema for models that need it
 const Schema = mongoose.Schema;
 
@@ -13,7 +11,7 @@ import './models/Comment.js';
 import './models/User.js';
 import './models/Post.js';
 
-const defaultUri = `mongodb://${config.db.host}:${config.db.port}/${config.db.name}`;
+const defaultUri = process.env.MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate';
 
 mongoose.connection.on('error', (err) => {
   console.error(`MongoDB connection error: ${err.message}`);

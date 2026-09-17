@@ -1,38 +1,31 @@
-# Agent Behavior
+## Verification and review
 
-Read SPEC.md and TODO.md only when needed for the current task.
+Do not run tests or perform a separate review pass.
 
-## Task execution
+Testing and review are handled by the small support agent after implementation.
 
-ONE checkbox in TODO.md = ONE task.
+After implementing the requested work:
 
-Never combine multiple unchecked TODO items.
+1. Do not run tests.
+2. Do not perform a self-review.
+3. Do not mark TODO checkbox(es) complete yet.
+4. Summarize the implementation in no more than 5 bullets.
+5. Stop and wait for external review.
 
-- Read only files relevant to the current task.
-- Do not analyze the entire repository unless explicitly requested.
-- Do not perform unrelated cleanup.
-- Do not narrate long reasoning.
-- Use tools as soon as enough information is available.
-- Keep changes small and focused.
-- Never continue automatically to the next checkbox.
-- After any context compression, re-read the exact file/range immediately before editing it.
-- Do not perform other tool calls between that read and the edit.
-- When updating TODO.md after compression, read only the required range and edit it immediately.
+When asked to process a small-agent review:
 
-## Git commits
+- Read `.local-ai/SMALL_AGENT_HANDOFF.md`.
+- Verify reported issues against the repository before changing code.
+- Fix only valid blocking issues.
+- Do not run tests yourself.
+- Stop after fixes so the small agent can review again.
 
-Never add `Co-authored-by: Qwen-Coder <qwen-coder@alibabacloud.com>` to commit messages.
+If the handoff contains:
 
-Qwen must never create, amend, or push Git commits. Make the requested code changes, stage them with `git add`, and report the staged files together with a proposed commit message. The user must review and run `git commit` themselves. Do not run `git commit`, `git commit --amend`, `git push`, or any force-push command, even when asked to finish the task.
+`Mode: Review`
+`Result: PASS`
 
-If an existing commit contains the unwanted trailer, tell the user they can run `scripts/remove-qwen-coauthor.sh` to remove it from the latest local commit. Qwen must not invoke this script because it amends history. Any history rewrite must be reported clearly.
-
-## Completion
-
-After the task:
-
-1. Run relevant verification.
-2. Fix failures introduced by the task.
-3. Update TODO.md.
-4. Summarize in no more than 5 bullets.
-5. Stop.
+then:
+- mark the reviewed TODO checkbox(es) complete
+- make no other implementation changes
+- stop.

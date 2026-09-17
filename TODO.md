@@ -100,7 +100,7 @@
 
 ## Phase 6 - Configuration/security and authentication
 
-- [ ] Replace config.json with environment variables shared by the server and CLI, including an explicit MongoDB URI
+- [x] Replace config.json with environment variables shared by the server and CLI, including an explicit MongoDB URI
 - [ ] Move the hardcoded JWT secret to required environment configuration
 - [ ] Validate environment at startup for both server and CLI
 - [ ] Add .env.example without real secrets

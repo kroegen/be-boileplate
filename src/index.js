@@ -3,6 +3,18 @@ import http from 'http';
 import app from './app.js';
 import { setUpConnection, disconnect } from './mongoose.js';
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET', 'PORT', 'NODE_ENV', 'CORS_ORIGIN'];
+
+const missingVars = requiredEnvVars.filter((key) => !process.env[key]);
+
+if (missingVars.length > 0) {
+  console.error('Missing required environment variables:');
+  missingVars.forEach((key) => console.error(`  ${key}`));
+  console.error('Please copy .env.example to .env and configure the values.');
+  process.exit(1);
+}
+
 const port = process.env.PORT || '3000';
 const server = http.createServer(app);
 

@@ -1,7 +1,7 @@
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import express from 'express';
-import logger from 'morgan';
+import logger from './utils/logger.js';
 import router from './routes/index.js';
 import { handleError } from './utils/errors.js';
 import { securityMiddleware, corsMiddleware } from './middleware/security.js';
@@ -13,7 +13,19 @@ app.use(securityMiddleware);
 app.use(corsMiddleware);
 app.use(sanitizeResponseMiddleware);
 
-app.use(logger('dev'));
+// Custom logger middleware that redacts secrets
+app.use((req, res, next) => {
+  const userAgent = req.get('user-agent') || '';
+  const logObj = {
+    method: req.method,
+    url: req.url,
+    userAgent,
+  };
+
+  logger.info(logObj);
+  next();
+});
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());

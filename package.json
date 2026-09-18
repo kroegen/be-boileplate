@@ -19,7 +19,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "cli:add-user": "node src/cli/add-user.js"
   },
   "keywords": [],
   "author": "",

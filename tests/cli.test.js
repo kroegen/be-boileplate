@@ -8,7 +8,7 @@ import User from '#src/models/User.js';
 import { isArgon2idHash } from '#src/utils/auth.js';
 
 const execFileAsync = promisify(execFile);
-const cliScript = fileURLToPath(new URL('../src/bin/add_user.js', import.meta.url));
+const cliScript = fileURLToPath(new URL('../src/cli/add-user.js', import.meta.url));
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
 const cliDbUri = testDbUri.replace(/\/[^/]+$/, '/be-boilerplate-cli-regression');

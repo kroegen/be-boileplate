@@ -124,8 +124,8 @@
 ## Phase 7 - Architecture cleanup
 
 - [x] Move HTTP handling into controllers, make services independent of Express, and remove proxy layers; preserve API response contracts in tests
-- [ ] Reorganize database/config modules and move the CLI out of src/bin; verify server startup and CLI database operations
-- [ ] Replace morgan with structured logging and retain secret redaction
+- [x] Reorganize database/config modules and move the CLI out of src/bin; verify server startup and CLI database operations
+- [x] Replace morgan with structured logging and retain secret redaction
 
 ## Phase 8 - TypeScript
 

@@ -1,12 +1,9 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 import { mongoose, setUpConnection, disconnect } from '#src/mongoose.js';
+import { getMongoDbUri } from '#src/config/index.js';
 
 const startCli = async () => {
-  await setUpConnection(process.env.MONGODB_URI);
-
-  const User = mongoose.model('UserModel');
-
   // Parse command line arguments manually
   const args = process.argv.slice(2);
   const opts = {
@@ -26,7 +23,17 @@ const startCli = async () => {
       continue;
     }
 
-    if (arg.startsWith('--email=')) {
+    if (arg === '-l' || arg === '--email') {
+      opts.email = args[++i];
+    } else if (arg === '-p' || arg === '--password') {
+      opts.password = args[++i];
+    } else if (arg === '-n' || arg === '--name') {
+      opts.name = args[++i];
+    } else if (arg === '-r' || arg === '--role') {
+      opts.role = args[++i];
+    } else if (arg === '-d' || arg === '--drop') {
+      opts.drop = true;
+    } else if (arg.startsWith('--email=')) {
       opts.email = arg.substring('--email='.length);
     } else if (arg.startsWith('--password=')) {
       opts.password = arg.substring('--password='.length);
@@ -34,8 +41,6 @@ const startCli = async () => {
       opts.name = arg.substring('--name='.length);
     } else if (arg.startsWith('--role=')) {
       opts.role = arg.substring('--role='.length);
-    } else if (arg === '-d' || arg === '--drop') {
-      opts.drop = true;
     }
   }
 
@@ -58,11 +63,12 @@ const startCli = async () => {
 
     console.log(helpText);
 
-    if (!opts.email || !opts.password) {
-      await disconnect();
-      process.exit(1);
-    }
+    process.exit(1);
   }
+
+  await setUpConnection(getMongoDbUri());
+
+  const User = mongoose.model('UserModel');
 
   const user = new User({
     status: 'ACTIVE',

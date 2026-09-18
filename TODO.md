@@ -113,8 +113,8 @@
 - [x] Remove the unused legacy and bulk migration paths; password changes rehash new Argon2id credentials
 - [x] Verify API-created and CLI-created users can log in, including invalid-password cases
 - [x] Update existing password-check tests to await checkPassword and add session regressions for valid, invalid, and empty-hash credentials
-- [ ] Define which routes require JWT authentication and their unauthenticated/expired-token behavior
-- [ ] Add JWT verification middleware to the agreed routes; tokens currently have no consumer
+- [x] Define which routes require JWT authentication and their unauthenticated/expired-token behavior
+- [x] Add JWT verification middleware to the agreed routes; tokens currently have no consumer
 - [ ] Add tests for missing, invalid, expired, and valid tokens
 - [ ] Define and add input validation for user/session/post/comment bodies, covering the audited missing-field and duplicate-email cases
 - [ ] Add Helmet

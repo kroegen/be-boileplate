@@ -48,7 +48,8 @@
       "Bash(find *)",
       "Agent(reviewer)",
       "Agent(scout)",
-      "Bash(ln *)"
+      "Bash(ln *)",
+      "Bash(mv *)"
     ]
   },
   "$version": 4

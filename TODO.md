@@ -117,7 +117,7 @@
 - [x] Add JWT verification middleware to the agreed routes; tokens currently have no consumer
 - [x] Add tests for missing, invalid, expired, and valid tokens
 - [x] Define and add input validation for user/session/post/comment bodies, covering the audited missing-field and duplicate-email cases
-- [ ] Add Helmet and configure CORS; verify security headers and allowed/disallowed origins with API tests
+- [x] Add Helmet and configure CORS; verify security headers and allowed/disallowed origins with API tests
 - [ ] Verify password hashes, salts, and secrets are excluded from every API response and error path
 
 ## Phase 7 - Architecture cleanup

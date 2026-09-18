@@ -10,20 +10,40 @@ After implementing requested work:
 2. Fix any test failures before requesting review.
 3. Do not perform a separate self-review.
 4. Do not mark TODO checkbox(es) complete yet.
-5. Call the `agent` tool with:
+5. Prepare the review material:
+   - run `git status --short`
+   - run `git diff --unified=10`
+   - identify all files changed for the current TODO
+   - if the current TODO created new untracked files, include their contents in the review material because normal `git diff` does not include them
+6. Call the `agent` tool with:
    - `subagent_type: "reviewer"`
    - `run_in_background: false`
-6. Wait for the reviewer result inline.
-7. Do not call `list_agents` while waiting.
+7. In the reviewer prompt, provide:
+   - the exact TODO being reviewed
+   - the relevant test result summary
+   - `git status --short`
+   - the complete `git diff --unified=10` for the current implementation
+   - contents of any new untracked files created for the current TODO
+8. Wait for the reviewer result inline.
+9. Do not call `list_agents` while waiting.
+
+The reviewer should review the supplied diff first.
+
+Do not ask the reviewer to rediscover the implementation changes from the repository.
 
 If the reviewer returns `ISSUES:`:
 
 1. Verify each reported issue against the repository.
 2. Fix only valid issues.
 3. Run the relevant tests again.
-4. Start a NEW foreground `reviewer` run using `run_in_background: false`.
-5. Repeat until the reviewer returns `PASS`.
-6. Maximum 3 review/fix cycles.
+4. Prepare a fresh `git status --short` and `git diff --unified=10`.
+5. Include contents of any new untracked files created for the current TODO.
+6. Start a NEW foreground `reviewer` run using:
+   - `subagent_type: "reviewer"`
+   - `run_in_background: false`
+7. Give the new reviewer the updated diff and test result.
+8. Repeat until the reviewer returns `PASS`.
+9. Maximum 3 review/fix cycles.
 
 If issues remain after 3 review cycles, stop and report them to the user.
 
@@ -54,18 +74,39 @@ Do not automatically retry a failed reviewer invocation.
 
 When the user asks to work on the next TODO:
 
-1. If a completed scout result for the next TODO is already available, use it.
-2. Otherwise call the `scout` subagent and wait for its result.
-3. Immediately implement the returned task.
-4. Do not ask the user for confirmation.
-5. Continue automatically into the verification and review workflow.
+1. If a completed scout result for the current TODO is already available, use it.
+2. Otherwise call the `scout` subagent in the foreground:
+   - `subagent_type: "scout"`
+   - `run_in_background: false`
+3. Wait for the scout result.
+4. Identify the exact current TODO from the scout result.
+5. BEFORE reading implementation files, editing files, installing packages, or making any implementation changes, immediately start a NEW `scout` subagent in the background for the TODO after the current one:
+   - `subagent_type: "scout"`
+   - `run_in_background: true`
+6. Explicitly tell the background scout:
+   - the exact current TODO is already claimed
+   - it MUST skip that TODO
+   - it must find and plan the next incomplete TODO after it
+   - it must not implement anything
+7. Do not wait for the background scout.
+8. Immediately begin implementing the current TODO.
+9. Do not ask the user for confirmation.
+10. Continue automatically into the verification and review workflow.
 
-While implementing the current TODO, once the current task is known:
+The background scout MUST be launched before implementation of the current TODO begins.
 
-1. Start the `scout` subagent in the background to prepare the TODO after the current one.
-2. Explicitly tell the scout which current TODO to exclude.
-3. Continue implementing the current task immediately.
-4. Do not poll `list_agents`.
-5. Let the scout completion notification arrive asynchronously.
-6. Do not act on the scout result until the current TODO has passed reviewer validation.
-7. After the current TODO passes review, use the completed scout result for the next TODO instead of launching another scout.
+Do not postpone launching the background scout until after edits, tests, or review.
+
+Do not launch more than one background scout for the same next TODO.
+
+Do not poll `list_agents`.
+
+Let the background scout completion notification arrive asynchronously.
+
+When the background scout finishes:
+
+1. Retain its completed result as the prepared plan for the next TODO.
+2. Do not act on that result while the current TODO is still being implemented or reviewed.
+3. Finish the current TODO completely through reviewer `PASS`.
+4. After the current TODO passes review, the completed background scout result becomes the plan for the next TODO.
+5. Do not launch another foreground scout for that next TODO if a valid completed background scout result already exists.

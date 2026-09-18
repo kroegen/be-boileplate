@@ -41,3 +41,4 @@ bin/config.json
 #why?
 
 .qwen/tmp/*
+.qwen/mongodb/*

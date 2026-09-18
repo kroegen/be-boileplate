@@ -2,18 +2,14 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import express from 'express';
 import logger from 'morgan';
-import cors from 'cors';
 import router from './routes/index.js';
 import { handleError } from './utils/errors.js';
+import { securityMiddleware, corsMiddleware } from './middleware/security.js';
 
 const app = express();
 
-app.use(
-  cors({
-    origin: '*',
-    methods: 'GET,POST,PATCH,DELETE',
-  })
-);
+app.use(securityMiddleware);
+app.use(corsMiddleware);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

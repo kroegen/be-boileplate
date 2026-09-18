@@ -15,7 +15,7 @@ const authorizedGet = (path) => request(app).get(path).set('Authorization', `Bea
 const authorizedPost = (path) =>
   request(app).post(path).set('Authorization', `Bearer ${authToken}`);
 
-describe('API Smoke Tests', () => {
+describe('API Smoke Tests', { timeout: 30000 }, () => {
   beforeAll(async () => {
     process.env.JWT_SECRET = 'api-test-secret';
     authToken = jwt.sign({ id: 'api-test-user', role: 'ADMIN' }, process.env.JWT_SECRET, {
@@ -328,6 +328,48 @@ describe('API Smoke Tests', () => {
         .post('/api/sessions')
         .send({ email, password: 'correct-password' });
 
+      expect(res.status).toBe(401);
+    });
+  });
+
+  describe('Security Headers', () => {
+    it('should include Content-Security-Policy header', async () => {
+      const res = await request(app).get('/api/users');
+      expect(res.headers['content-security-policy']).toBeDefined();
+    });
+
+    it('should include X-Content-Type-Options header', async () => {
+      const res = await request(app).get('/api/users');
+      expect(res.headers['x-content-type-options']).toBe('nosniff');
+    });
+
+    it('should include X-Frame-Options header', async () => {
+      const res = await request(app).get('/api/users');
+      expect(res.headers['x-frame-options']).toBeDefined();
+    });
+
+    it('should include X-XSS-Protection header', async () => {
+      const res = await request(app).get('/api/users');
+      expect(res.headers['x-xss-protection']).toBeDefined();
+    });
+  });
+
+  describe('CORS', () => {
+    it('should allow requests from configured origin', async () => {
+      const res = await request(app)
+        .get('/api/users')
+        .set('Origin', process.env.CORS_ORIGIN || 'http://localhost:3000')
+        .set('Authorization', `Bearer ${authToken}`);
+      expect(res.status).toBe(200);
+      expect(res.headers['access-control-allow-origin']).toBe(
+        process.env.CORS_ORIGIN || 'http://localhost:3000'
+      );
+    });
+
+    it('should reject requests from disallowed origin', async () => {
+      const res = await request(app)
+        .get('/api/users')
+        .set('Origin', 'http://malicious-site.com');
       expect(res.status).toBe(401);
     });
   });

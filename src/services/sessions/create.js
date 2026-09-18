@@ -9,25 +9,27 @@ import {
   STATUS_SUCCESS,
   STATUS_FAILURE,
 } from '#src/utils/statusCodes.js';
+import { sessionCreateSchema } from '#src/schemas/sessions.js';
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour in milliseconds
 
 export const createSession = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const result = sessionCreateSchema.safeParse(req.body);
 
-    if (!email || !password) {
+    if (!result.success) {
+      const errors = result.error.issues.map((err) => ({
+        param: err.path.join('.'),
+        message: err.message,
+      }));
+
       return res.status(HTTP_BAD_REQUEST).json({
         status: STATUS_FAILURE,
-        data: {
-          errors: [
-            { param: 'email', message: 'Email is required' },
-            { param: 'password', message: 'Password is required' },
-          ],
-          message: 'Validation failed',
-        },
+        data: { errors, message: 'Validation failed' },
       });
     }
+
+    const { email, password } = result.data;
 
     const user = await User.findOne({ email });
 

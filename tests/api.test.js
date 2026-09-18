@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import app from '#src/app.js';
 import { setUpConnection, disconnect } from '#src/mongoose.js';
@@ -7,21 +8,41 @@ import Comment from '#src/models/Comment.js';
 import User from '#src/models/User.js';
 
 const testDbUri = process.env.TEST_MONGODB_URI || 'mongodb://localhost:27017/be-boilerplate-test';
+const originalJwtSecret = process.env.JWT_SECRET;
+let authToken;
+
+const authorizedGet = (path) => request(app).get(path).set('Authorization', `Bearer ${authToken}`);
+const authorizedPost = (path) =>
+  request(app).post(path).set('Authorization', `Bearer ${authToken}`);
 
 describe('API Smoke Tests', () => {
   beforeAll(async () => {
+    process.env.JWT_SECRET = 'api-test-secret';
+    authToken = jwt.sign({ id: 'api-test-user', role: 'ADMIN' }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
     await setUpConnection(testDbUri);
+    await User.ensureIndexes();
   });
 
   afterAll(async () => {
-    // Clean up test data
     await mongoose.connection.dropDatabase();
     await disconnect();
+    if (originalJwtSecret === undefined) {
+      delete process.env.JWT_SECRET;
+    } else {
+      process.env.JWT_SECRET = originalJwtSecret;
+    }
   });
 
   describe('GET /api/users', () => {
-    it('should return 200 with empty users array', async () => {
+    it('should reject a request without a token', async () => {
       const res = await request(app).get('/api/users');
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 200 with empty users array', async () => {
+      const res = await authorizedGet('/api/users');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe(1);
       expect(res.body.data.users).toBeInstanceOf(Array);
@@ -30,9 +51,10 @@ describe('API Smoke Tests', () => {
 
   describe('POST /api/users', () => {
     it('should return 201 with user data when creating a new user', async () => {
-      const res = await request(app)
-        .post('/api/users')
-        .send({ name: 'Test User', email: `test-${Date.now()}@example.com` });
+      const res = await authorizedPost('/api/users').send({
+        name: 'Test User',
+        email: `test-${Date.now()}@example.com`,
+      });
       expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.user).toMatchObject({
@@ -44,23 +66,49 @@ describe('API Smoke Tests', () => {
     });
 
     it('should not return passwordHash or salt in user response', async () => {
-      const res = await request(app)
-        .post('/api/users')
-        .send({ name: 'Security Test', email: `security-${Date.now()}@example.com` });
+      const res = await authorizedPost('/api/users').send({
+        name: 'Security Test',
+        email: `security-${Date.now()}@example.com`,
+      });
       expect(res.status).toBe(201);
       expect(res.body.data.user).not.toHaveProperty('passwordHash');
       expect(res.body.data.user).not.toHaveProperty('salt');
     });
 
     it('should return 400 when email is missing', async () => {
-      const res = await request(app).post('/api/users').send({ name: 'Test User' });
+      const res = await authorizedPost('/api/users').send({ name: 'Test User' });
       expect(res.status).toBe(400);
+      expect(res.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'email' })])
+      );
+    });
+
+    it('should reject an invalid email', async () => {
+      const res = await authorizedPost('/api/users').send({ name: 'Test User', email: 'invalid' });
+      expect(res.status).toBe(400);
+      expect(res.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'email' })])
+      );
+    });
+
+    it('should return 409 for a duplicate email', async () => {
+      const email = `duplicate-${Date.now()}@example.com`;
+      const first = await authorizedPost('/api/users').send({ name: 'First', email });
+      const second = await authorizedPost('/api/users').send({ name: 'Second', email });
+
+      expect(first.status).toBe(201);
+      expect(second.status).toBe(409);
+      expect(second.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'email' })])
+      );
     });
 
     it('should reject an explicitly empty password', async () => {
-      const res = await request(app)
-        .post('/api/users')
-        .send({ name: 'Empty Password', email: `empty-${Date.now()}@example.com`, password: '' });
+      const res = await authorizedPost('/api/users').send({
+        name: 'Empty Password',
+        email: `empty-${Date.now()}@example.com`,
+        password: '',
+      });
 
       expect(res.status).toBe(400);
       expect(res.body.status).toBe(0);
@@ -69,7 +117,7 @@ describe('API Smoke Tests', () => {
 
   describe('GET /api/posts', () => {
     it('should return 200 with empty posts array', async () => {
-      const res = await request(app).get('/api/posts');
+      const res = await authorizedGet('/api/posts');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe(1);
       expect(res.body.data.posts).toBeInstanceOf(Array);
@@ -78,9 +126,10 @@ describe('API Smoke Tests', () => {
 
   describe('POST /api/posts', () => {
     it('should return 201 with post data when creating a new post', async () => {
-      const res = await request(app)
-        .post('/api/posts')
-        .send({ author: 'Test Author', content: 'Test content' });
+      const res = await authorizedPost('/api/posts').send({
+        author: 'Test Author',
+        content: 'Test content',
+      });
       expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.post).toMatchObject({
@@ -90,29 +139,38 @@ describe('API Smoke Tests', () => {
     });
 
     it('should return a serialized post matching the list item shape', async () => {
-      const created = await request(app)
-        .post('/api/posts')
-        .send({ author: 'Contract Author', content: 'Contract content' });
+      const created = await authorizedPost('/api/posts').send({
+        author: 'Contract Author',
+        content: 'Contract content',
+      });
       expect(created.status).toBe(201);
       expect(created.body.status).toBe(1);
       expect(created.body.data.post.id).toEqual(expect.any(String));
       expect(Object.keys(created.body.data.post).sort()).toEqual(['author', 'content', 'id']);
 
-      const res = await request(app).get('/api/posts');
+      const res = await authorizedGet('/api/posts');
       expect(res.status).toBe(200);
       const listed = res.body.data.posts.find((post) => post.id === created.body.data.post.id);
       expect(listed).toEqual(created.body.data.post);
     });
 
     it('should return 400 when author is missing', async () => {
-      const res = await request(app).post('/api/posts').send({ content: 'Test content' });
+      const res = await authorizedPost('/api/posts').send({ content: 'Test content' });
       expect(res.status).toBe(400);
+    });
+
+    it('should return 400 when content is missing', async () => {
+      const res = await authorizedPost('/api/posts').send({ author: 'Test Author' });
+      expect(res.status).toBe(400);
+      expect(res.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'content' })])
+      );
     });
   });
 
   describe('GET /api/comments', () => {
     it('should return 200 with empty comments array', async () => {
-      const res = await request(app).get('/api/comments');
+      const res = await authorizedGet('/api/comments');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe(1);
       expect(res.body.data.comments).toBeInstanceOf(Array);
@@ -121,9 +179,10 @@ describe('API Smoke Tests', () => {
 
   describe('POST /api/comments', () => {
     it('should return 201 with serialized comment data when creating a new comment', async () => {
-      const res = await request(app)
-        .post('/api/comments')
-        .send({ author: 'Test Author', content: 'Test content' });
+      const res = await authorizedPost('/api/comments').send({
+        author: 'Test Author',
+        content: 'Test content',
+      });
       expect(res.status).toBe(201);
       expect(res.body.status).toBe(1);
       expect(res.body.data.comment).toMatchObject({
@@ -136,9 +195,10 @@ describe('API Smoke Tests', () => {
 
     it('persists submitted content through save, create responses, and list responses', async () => {
       const content = `Persisted content ${Date.now()}`;
-      const created = await request(app)
-        .post('/api/comments')
-        .send({ author: 'Content Check', content });
+      const created = await authorizedPost('/api/comments').send({
+        author: 'Content Check',
+        content,
+      });
       expect(created.status).toBe(201);
       expect(created.body.data.comment).toMatchObject({
         author: 'Content Check',
@@ -149,7 +209,7 @@ describe('API Smoke Tests', () => {
       expect(stored).not.toBeNull();
       expect(stored.content).toBe(content);
 
-      const res = await request(app).get('/api/comments');
+      const res = await authorizedGet('/api/comments');
       expect(res.status).toBe(200);
       const listed = res.body.data.comments.find(
         (comment) => comment.id === created.body.data.comment.id
@@ -158,15 +218,16 @@ describe('API Smoke Tests', () => {
     });
 
     it('should return a serialized comment matching the list item shape', async () => {
-      const created = await request(app)
-        .post('/api/comments')
-        .send({ author: 'Contract Author', content: 'Contract content' });
+      const created = await authorizedPost('/api/comments').send({
+        author: 'Contract Author',
+        content: 'Contract content',
+      });
       expect(created.status).toBe(201);
       expect(created.body.status).toBe(1);
       expect(created.body.data.comment.id).toEqual(expect.any(String));
       expect(Object.keys(created.body.data.comment).sort()).toEqual(['author', 'content', 'id']);
 
-      const res = await request(app).get('/api/comments');
+      const res = await authorizedGet('/api/comments');
       expect(res.status).toBe(200);
       const listed = res.body.data.comments.find(
         (comment) => comment.id === created.body.data.comment.id
@@ -175,33 +236,29 @@ describe('API Smoke Tests', () => {
     });
 
     it('should return 400 when author is missing', async () => {
-      const res = await request(app).post('/api/comments').send({ content: 'Test content' });
+      const res = await authorizedPost('/api/comments').send({ content: 'Test content' });
       expect(res.status).toBe(400);
       expect(res.body.status).toBe(0);
       expect(res.body.data.errors).toBeInstanceOf(Array);
     });
+
+    it('should return 400 when content is missing', async () => {
+      const res = await authorizedPost('/api/comments').send({ author: 'Test Author' });
+      expect(res.status).toBe(400);
+      expect(res.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'content' })])
+      );
+    });
   });
 
   describe('POST /api/sessions', () => {
-    const originalJwtSecret = process.env.JWT_SECRET;
-
-    beforeAll(() => {
-      process.env.JWT_SECRET = 'session-test-secret';
-    });
-
-    afterAll(() => {
-      if (originalJwtSecret === undefined) {
-        delete process.env.JWT_SECRET;
-      } else {
-        process.env.JWT_SECRET = originalJwtSecret;
-      }
-    });
-
     it('should return 200 with token for valid credentials', async () => {
       const email = `session-test-${Date.now()}@example.com`;
-      const created = await request(app)
-        .post('/api/users')
-        .send({ name: 'Session Test', email, password: 'correct-password' });
+      const created = await authorizedPost('/api/users').send({
+        name: 'Session Test',
+        email,
+        password: 'correct-password',
+      });
 
       expect(created.status).toBe(201);
       expect(created.body.data.user).not.toHaveProperty('passwordHash');
@@ -214,6 +271,11 @@ describe('API Smoke Tests', () => {
       expect(res.status).toBe(200);
       expect(res.body.status).toBe(1);
       expect(res.body.data.token).toEqual(expect.any(String));
+
+      const protectedRes = await request(app)
+        .get('/api/users')
+        .set('Authorization', `Bearer ${res.body.data.token}`);
+      expect(protectedRes.status).toBe(200);
 
       const invalid = await request(app)
         .post('/api/sessions')
@@ -232,9 +294,19 @@ describe('API Smoke Tests', () => {
       expect(res.body.data.errors).toBeInstanceOf(Array);
     });
 
+    it('should reject an invalid email format', async () => {
+      const res = await request(app)
+        .post('/api/sessions')
+        .send({ email: 'invalid', password: 'password' });
+      expect(res.status).toBe(400);
+      expect(res.body.data.errors).toEqual(
+        expect.arrayContaining([expect.objectContaining({ param: 'email' })])
+      );
+    });
+
     it('should reject users without a password', async () => {
       const email = `no-password-${Date.now()}@example.com`;
-      await request(app).post('/api/users').send({ name: 'No Password', email });
+      await authorizedPost('/api/users').send({ name: 'No Password', email });
 
       const res = await request(app)
         .post('/api/sessions')

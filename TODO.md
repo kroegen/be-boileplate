@@ -117,56 +117,35 @@
 - [x] Add JWT verification middleware to the agreed routes; tokens currently have no consumer
 - [x] Add tests for missing, invalid, expired, and valid tokens
 - [x] Define and add input validation for user/session/post/comment bodies, covering the audited missing-field and duplicate-email cases
-- [ ] Add Helmet
-- [ ] Restrict/configure CORS
+- [ ] Add Helmet and configure CORS; verify security headers and allowed/disallowed origins with API tests
 - [ ] Verify password hashes, salts, and secrets are excluded from every API response and error path
 
 ## Phase 7 - Architecture cleanup
 
-- [ ] Make services independent of Express
-- [ ] Make controllers actual HTTP adapters and remove redundant controller/service proxy layers
-- [ ] Reorganize database/config modules
-- [ ] Move CLI out of src/bin
+- [ ] Move HTTP handling into controllers, make services independent of Express, and remove proxy layers; preserve API response contracts in tests
+- [ ] Reorganize database/config modules and move the CLI out of src/bin; verify server startup and CLI database operations
 - [ ] Replace morgan with structured logging and retain secret redaction
 
 ## Phase 8 - TypeScript
 
-- [ ] Install TypeScript/tooling
-- [ ] Add tsconfig
-- [ ] Enable strict mode
-- [ ] Convert config
-- [ ] Convert utilities
-- [ ] Convert database layer
-- [ ] Convert models
-- [ ] Convert services
-- [ ] Convert controllers
-- [ ] Convert routes
-- [ ] Convert app/server
-- [ ] Convert CLI
-- [ ] Remove remaining CommonJS
-- [ ] Switch package to ESM
-- [ ] Remove allowJs
-- [ ] Ensure zero type errors
+- [x] Remove remaining CommonJS from application files
+- [x] Switch package to ESM
+- [ ] Install TypeScript tooling and add a strict tsconfig that allows JS/TS coexistence during migration
+- [ ] Convert config, utilities, and the database layer to TypeScript; pass typecheck and existing regressions
+- [ ] Convert models and services to TypeScript; pass typecheck and database/API regressions
+- [ ] Convert controllers, routes, and app/server to TypeScript; pass typecheck and API regressions
+- [ ] Convert the CLI to TypeScript; pass typecheck and CLI regressions
+- [ ] Remove allowJs and remaining application JavaScript, then pass strict typecheck and production build
 
 ## Phase 9 - Quality/CI
 
 - [ ] Complete integration coverage for every API resource beyond the regressions added with earlier fixes
-- [ ] Add GitHub Actions for lint, typecheck, tests with an isolated MongoDB database, and production build
+- [ ] Add GitHub Actions for npm ci, lint, typecheck, tests with an isolated MongoDB database, and production build; run the same checks locally and make them pass
 - [ ] Review the final npm audit against the saved 20-vulnerability baseline and account for any remaining findings
-- [ ] Run lint
-- [ ] Run typecheck
-- [ ] Run tests
-- [ ] Run production build
 
 ## Phase 10 - Documentation
 
-- [ ] Rewrite README
-- [ ] Document environment variables
-- [ ] Document project structure
-- [ ] Document API, including intentional changes from the recorded response baseline
-- [ ] Document development workflow
-- [ ] Document testing and the isolated database setup
-- [ ] Document production start/build
+- [ ] Rewrite README with requirements, installation, environment variables, project structure, API and intentional response changes, development workflow, isolated database testing, CLI usage, and production build/start
 
 ## Phase 0 Audit Notes
 

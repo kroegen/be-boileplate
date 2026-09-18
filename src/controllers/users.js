@@ -1,4 +1,17 @@
-// TODO(architecture): Make this controller map HTTP input/output and call framework-independent user services.
 import { createUser, getUsers } from '#src/services/users/index.js';
 
-export { createUser as create, getUsers as list };
+export const create = async (req, res) => {
+  const result = await createUser(req.body);
+  res.status(result.statusCode).json({
+    status: result.status === 'SUCCESS' ? 1 : 0,
+    data: result.data,
+  });
+};
+
+export const list = async (req, res) => {
+  const result = await getUsers();
+  res.status(result.statusCode).json({
+    status: result.status === 'SUCCESS' ? 1 : 0,
+    data: result.data,
+  });
+};

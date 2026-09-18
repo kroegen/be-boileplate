@@ -1,4 +1,9 @@
-// TODO(architecture): Make this controller map HTTP input/output and call a framework-independent session service.
 import { createSession } from '#src/services/sessions/index.js';
 
-export { createSession };
+export const create = async (req, res) => {
+  const result = await createSession(req.body);
+  res.status(result.statusCode).json({
+    status: result.status === 'SUCCESS' ? 1 : 0,
+    data: result.data,
+  });
+};

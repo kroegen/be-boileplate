@@ -1,8 +1,8 @@
 import express from 'express';
-import { createSession } from '#src/controllers/sessions.js';
+import { create } from '#src/controllers/sessions.js';
 
 const sessions = express.Router();
 
-sessions.post('/', createSession);
+sessions.post('/', create);
 
 export default sessions;

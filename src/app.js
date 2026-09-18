@@ -5,11 +5,13 @@ import logger from 'morgan';
 import router from './routes/index.js';
 import { handleError } from './utils/errors.js';
 import { securityMiddleware, corsMiddleware } from './middleware/security.js';
+import { sanitizeResponseMiddleware } from './middleware/sanitize.js';
 
 const app = express();
 
 app.use(securityMiddleware);
 app.use(corsMiddleware);
+app.use(sanitizeResponseMiddleware);
 
 app.use(logger('dev'));
 app.use(bodyParser.json());

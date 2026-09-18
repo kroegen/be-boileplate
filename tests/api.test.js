@@ -166,6 +166,14 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
         expect.arrayContaining([expect.objectContaining({ param: 'content' })])
       );
     });
+
+    it('should not expose passwordHash or salt in error responses', async () => {
+      const res = await authorizedPost('/api/posts').send({ author: 'Test Author' });
+      expect(res.status).toBe(400);
+      const responseString = JSON.stringify(res.body);
+      expect(responseString).not.toMatch(/passwordHash/i);
+      expect(responseString).not.toMatch(/salt/i);
+    });
   });
 
   describe('GET /api/comments', () => {
@@ -249,6 +257,14 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
         expect.arrayContaining([expect.objectContaining({ param: 'content' })])
       );
     });
+
+    it('should not expose passwordHash or salt in error responses', async () => {
+      const res = await authorizedPost('/api/comments').send({ author: 'Test Author' });
+      expect(res.status).toBe(400);
+      const responseString = JSON.stringify(res.body);
+      expect(responseString).not.toMatch(/passwordHash/i);
+      expect(responseString).not.toMatch(/salt/i);
+    });
   });
 
   describe('POST /api/sessions', () => {
@@ -302,6 +318,16 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
       expect(res.body.data.errors).toEqual(
         expect.arrayContaining([expect.objectContaining({ param: 'email' })])
       );
+    });
+
+    it('should not expose passwordHash in error responses', async () => {
+      const res = await request(app)
+        .post('/api/sessions')
+        .send({ email: 'invalid@example.com', password: 'wrong' });
+      expect(res.status).toBe(401);
+      const responseString = JSON.stringify(res.body);
+      expect(responseString).not.toMatch(/passwordHash/i);
+      expect(responseString).not.toMatch(/salt/i);
     });
 
     it('should reject users without a password', async () => {

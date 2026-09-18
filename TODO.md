@@ -118,7 +118,8 @@
 - [x] Add tests for missing, invalid, expired, and valid tokens
 - [x] Define and add input validation for user/session/post/comment bodies, covering the audited missing-field and duplicate-email cases
 - [x] Add Helmet and configure CORS; verify security headers and allowed/disallowed origins with API tests
-- [ ] Verify password hashes, salts, and secrets are excluded from every API response and error path
+- [x] Add response sanitization middleware to exclude password hashes, salts, and secrets from all API responses and error paths
+- [x] Run tests to verify no sensitive data leaks in responses
 
 ## Phase 7 - Architecture cleanup
 

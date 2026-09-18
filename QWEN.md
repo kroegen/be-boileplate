@@ -2,7 +2,7 @@
 
 The main agent is responsible for implementation and testing.
 
-The `reviewer` subagent performs read-only code review only.
+The `reviewer` subagent performs read-only review of a prepared review handoff file only.
 
 After implementing requested work:
 
@@ -10,42 +10,72 @@ After implementing requested work:
 2. Fix any test failures before requesting review.
 3. Do not perform a separate self-review.
 4. Do not mark TODO checkbox(es) complete yet.
-5. Prepare the review material:
+5. Prepare fresh review material:
    - run `git status --short`
    - run `git diff --unified=10`
    - identify all files changed for the current TODO
-   - if the current TODO created new untracked files, include their contents because normal `git diff` does not include them
-6. Call the `agent` tool with:
-   - `subagent_type: "reviewer"`
-   - `run_in_background: false`
-7. In the reviewer prompt, provide:
-   - the exact TODO being reviewed
-   - the relevant test result summary
-   - `git status --short`
-   - the complete `git diff --unified=10`
-   - contents of any new untracked files created for the current TODO
+   - include contents of new untracked files created for the current TODO because normal `git diff` does not include them
+6. Write the complete review package to the reviewer handoff file defined below.
+7. Call the `reviewer` subagent in the foreground.
 8. Wait for the reviewer result inline.
 9. Do not call `list_agents` while waiting.
 
-The reviewer should review the supplied diff first.
-
 Do not ask the reviewer to rediscover implementation changes from the repository.
+
+### Reviewer handoff file
+
+Use this path:
+
+`/tmp/qwen-code-handoff/<repository-name>/reviewer-context.md`
+
+Create the parent directory if necessary.
+
+Overwrite the file for every review cycle. Never append old review data.
+
+The file must contain exactly these sections:
+
+```md
+# TODO
+<exact TODO being reviewed>
+
+# TEST RESULTS
+<commands run and concise results>
+
+# GIT STATUS
+```text
+<git status --short>
+```
+
+# GIT DIFF
+```diff
+<complete git diff --unified=10>
+```
+
+# NEW UNTRACKED FILES
+## <path>
+```text
+<complete contents>
+```
+```
+
+If there are no new untracked files, write:
+
+`None.`
+
+When calling the reviewer, provide only:
+- the exact TODO text
+- the absolute reviewer handoff file path
+- an instruction to read that file and return `PASS` or `ISSUES`
 
 If the reviewer returns `ISSUES:`:
 
 1. Verify each reported issue against the repository.
 2. Fix only valid issues.
 3. Run the relevant tests again.
-4. Prepare fresh review material:
-   - `git status --short`
-   - `git diff --unified=10`
-   - contents of new untracked files when applicable
-5. Start a NEW foreground `reviewer` run using:
-   - `subagent_type: "reviewer"`
-   - `run_in_background: false`
-6. Give the reviewer the updated diff and test result.
-7. Repeat until the reviewer returns `PASS`.
-8. Maximum 3 review/fix cycles.
+4. Overwrite the reviewer handoff file with fresh status, diff, test results, and untracked-file contents.
+5. Start a NEW foreground reviewer run.
+6. Repeat until the reviewer returns `PASS`.
+7. Maximum 3 review/fix cycles.
 
 If issues remain after 3 review cycles, stop and report them to the user.
 
@@ -57,9 +87,7 @@ If the reviewer returns `PASS`:
 4. Stop.
 
 Do not ask the user whether to fix reviewer findings.
-
 Do not say that the reviewer will review the changes and then stop. Actually call the reviewer.
-
 Do not poll `list_agents`.
 
 If the reviewer:
@@ -70,7 +98,7 @@ If the reviewer:
 
 then stop and report the reviewer failure.
 
-Do not automatically retry a failed reviewer invocation.
+Do not automatically retry a technically failed reviewer invocation.
 
 ## TODO selection
 
@@ -93,71 +121,120 @@ When the user asks to work on the next TODO:
    - exact TODO text
    - TODO.md line number
 
-TODO selection is deterministic bookkeeping. Do it directly and cheaply.
+TODO selection is deterministic bookkeeping. Do it directly.
 
 ## Scout workflow
 
-The `scout` is a task planner, not a TODO finder.
+The scout does NOT explore the repository independently.
 
-After the main agent selects the current TODO:
+The main agent gathers repository context and writes a compact handoff file. The scout reads only that file and synthesizes a plan.
 
-1. If a completed scout result already exists for that exact TODO, use it.
-2. Otherwise call the `scout` subagent in the foreground:
-   - `subagent_type: "scout"`
-   - `run_in_background: false`
-3. Pass the scout:
+### Scout handoff file
+
+Use this path:
+
+`/tmp/qwen-code-handoff/<repository-name>/scout-context.md`
+
+Create the parent directory if necessary.
+
+Overwrite the file for every scout task. Never append old task data.
+
+The handoff file must contain exactly these sections:
+
+```md
+# TODO
+TODO.md line: <line number>
+
+<exact TODO text>
+
+# CURRENT STRUCTURE
+- <relevant file or module> — <short factual description>
+- <relevant file or module> — <short factual description>
+
+# RELEVANT SYMBOLS
+- <symbol> — <file> — <short role>
+- <symbol> — <file> — <short role>
+
+# RELEVANT CODE
+## <file>
+```text
+<small directly relevant snippet>
+```
+
+# TESTS / CONTRACTS
+- <existing test or behavior that must be preserved>
+
+# KNOWN CONSTRAINTS
+- <constraint visible from the repository or TODO>
+
+# QUESTIONS FOR SCOUT
+Produce:
+1. recommended implementation direction
+2. affected files
+3. order of work
+4. important risks
+5. acceptance checks
+6. anything the main agent must verify before editing
+```
+
+### How main prepares scout context
+
+The main agent must gather this context itself.
+
+Do not delegate context gathering to `Explore`, another scout, or another subagent.
+
+Use targeted repository tools directly:
+- prefer `grep_search`
+- use `glob` only when file locations are unknown
+- use `read_file` for the smallest useful ranges
+
+Do not make the handoff exhaustive.
+
+The purpose is to provide enough grounded context for planning, not to copy the repository into a markdown file.
+
+Target roughly 2,000-6,000 tokens.
+Do not exceed roughly 8,000 tokens unless the task genuinely cannot be represented more compactly.
+
+Prefer:
+- file names
+- symbols
+- relationships
+- short relevant snippets
+- tests/contracts
+
+Avoid:
+- whole large files
+- unrelated implementation details
+- historical TODO notes
+- duplicate snippets
+
+### Calling scout
+
+After writing the scout handoff file:
+
+1. Call the `scout` subagent.
+2. Pass:
    - the exact TODO text
    - the TODO.md line number
-   - an explicit instruction to plan ONLY that task
-   - an explicit instruction NOT to search TODO.md for another task
-4. Wait for the scout result.
-5. Treat the returned result as the implementation plan for the current TODO.
+   - the absolute scout handoff file path
+3. Tell the scout to read ONLY that handoff file.
+4. Tell the scout not to inspect the repository or TODO.md.
+5. Tell the scout not to implement anything.
 
-Before implementing the current TODO:
+The scout result is advisory. The main agent owns implementation decisions.
 
-1. Determine the next incomplete TODO after the current TODO using `grep_search` on `TODO.md`.
-2. Do not ask a scout to discover the next TODO.
-3. Record the next TODO's:
-   - exact TODO text
-   - TODO.md line number
-4. If another incomplete TODO exists, immediately start a NEW `scout` subagent in the background:
-   - `subagent_type: "scout"`
-   - `run_in_background: true`
-5. Pass that background scout:
-   - the exact next TODO text
-   - the TODO.md line number
-   - an explicit instruction to plan ONLY that task
-   - an explicit instruction NOT to search TODO.md for another task
-   - an explicit instruction NOT to implement anything
-6. Do not wait for the background scout.
-7. Immediately begin implementing the current TODO.
+If the scout reports `NEEDS_CONTEXT`, main may inspect the specifically requested missing information, overwrite the same scout handoff file with the additional context, and run ONE new scout invocation.
 
-The background scout MUST be launched before:
-- editing implementation files
-- installing packages
-- running implementation commands
-- making implementation changes
-
-Do not launch more than one background scout for the same TODO.
-
-Do not poll `list_agents`.
-
-Let the background scout completion notification arrive asynchronously.
-
-When the background scout finishes:
-
-1. Retain its completed result as the prepared plan for that exact TODO.
-2. Do not act on it while the current TODO is still being implemented or reviewed.
-3. Finish the current TODO completely through reviewer `PASS`.
-4. When that prepared TODO becomes the current TODO, use the retained scout result directly.
-5. Do not launch another foreground scout for a TODO that already has a valid completed scout result.
+Do not allow an open-ended scout exploration loop.
+Do not launch a fresh scout merely to retrieve a previous scout result.
+Do not ask a scout to rediscover a task it already analyzed.
 
 ## Implementation handoff
 
-After receiving the scout plan for the current TODO:
+After receiving the scout plan:
 
 1. Verify actual repository paths and current code before editing.
-2. Do not blindly trust guessed file paths from the scout.
+2. Do not blindly trust guessed file paths or conclusions from the scout.
 3. Implement the current TODO.
 4. Run the relevant tests.
 5. Continue automatically into the verification and review workflow.

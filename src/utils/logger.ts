@@ -1,7 +1,17 @@
 // Structured logger with secret redaction
+
+type LogFn = (...args: unknown[]) => void;
+
+interface Logger {
+  debug: LogFn;
+  info: LogFn;
+  warn: LogFn;
+  error: LogFn;
+}
+
 const SECRET_KEYS = ['password', 'secret', 'token', 'authorization', 'cookie'];
 
-const redactObject = (obj) => {
+const redactObject = (obj: unknown): unknown => {
   if (typeof obj !== 'object' || obj === null) {
     return obj;
   }
@@ -10,7 +20,7 @@ const redactObject = (obj) => {
     return obj.map((item) => redactObject(item));
   }
 
-  const result = {};
+  const result: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(obj)) {
     const lowerKey = key.toLowerCase();
     if (SECRET_KEYS.some((secretKey) => lowerKey.includes(secretKey))) {
@@ -22,8 +32,8 @@ const redactObject = (obj) => {
   return result;
 };
 
-const logger = {
-  debug: (...args) => {
+const logger: Logger = {
+  debug: (...args: unknown[]) => {
     if (process.env.NODE_ENV === 'production') {
       return;
     }
@@ -31,17 +41,17 @@ const logger = {
     console.debug('[DEBUG]', ...redactedArgs);
   },
 
-  info: (...args) => {
+  info: (...args: unknown[]) => {
     const redactedArgs = args.map((arg) => redactObject(arg));
     console.info('[INFO]', ...redactedArgs);
   },
 
-  warn: (...args) => {
+  warn: (...args: unknown[]) => {
     const redactedArgs = args.map((arg) => redactObject(arg));
     console.warn('[WARN]', ...redactedArgs);
   },
 
-  error: (...args) => {
+  error: (...args: unknown[]) => {
     const redactedArgs = args.map((arg) => redactObject(arg));
     console.error('[ERROR]', ...redactedArgs);
   },

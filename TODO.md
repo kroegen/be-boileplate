@@ -131,8 +131,8 @@
 
 - [x] Remove remaining CommonJS from application files
 - [x] Switch package to ESM
-- [ ] Install TypeScript tooling and add a strict tsconfig that allows JS/TS coexistence during migration
-- [ ] Convert config, utilities, and the database layer to TypeScript; pass typecheck and existing regressions
+- [x] Install TypeScript tooling and add a strict tsconfig that allows JS/TS coexistence during migration
+- [x] Convert config, utilities, and the database layer to TypeScript; pass typecheck and existing regressions
 - [ ] Convert models and services to TypeScript; pass typecheck and database/API regressions
 - [ ] Convert controllers, routes, and app/server to TypeScript; pass typecheck and API regressions
 - [ ] Convert the CLI to TypeScript; pass typecheck and CLI regressions

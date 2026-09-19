@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+import { Schema } from '#src/mongoose.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const CommentSchema = new mongoose.Schema({
+const CommentSchema = new Schema({
   _id: {
     type: String,
     default: uuidv4,
@@ -19,4 +19,4 @@ const CommentSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('CommentModel', CommentSchema);
+export default CommentSchema;

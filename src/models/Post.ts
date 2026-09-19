@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+import { Schema } from '#src/mongoose.js';
 import { v4 as uuidv4 } from 'uuid';
 
-const PostSchema = new mongoose.Schema({
+const PostSchema = new Schema({
   _id: {
     type: String,
     default: uuidv4,
@@ -21,4 +21,4 @@ const PostSchema = new mongoose.Schema({
   ],
 });
 
-export default mongoose.model('PostModel', PostSchema);
+export default PostSchema;

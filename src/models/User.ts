@@ -1,8 +1,8 @@
-import { mongoose } from '#src/mongoose.js';
+import { mongoose, Schema } from '#src/mongoose.js';
 import { v4 as uuidv4 } from 'uuid';
 import { hashPassword, verifyPassword } from '#src/utils/auth.js';
 
-const UserSchema = new mongoose.Schema(
+const UserSchema = new Schema(
   {
     _id: {
       type: String,
@@ -37,19 +37,19 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-UserSchema.virtual('password').set(function setHash(password) {
+UserSchema.virtual('password').set(function setHash(this: { $locals: { password?: string } }, password: string) {
   this.$locals.password = password;
 });
 
 UserSchema.methods = {
-  async checkPassword(plainText) {
+  async checkPassword(plainText: string): Promise<boolean> {
     return verifyPassword(plainText, this.passwordHash);
   },
 };
 
 UserSchema.pre('save', async function () {
   if (this.$locals.password !== undefined) {
-    this.passwordHash = await hashPassword(this.$locals.password);
+    this.passwordHash = await hashPassword(this.$locals.password as string);
     delete this.$locals.password;
   }
 });

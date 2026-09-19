@@ -16,7 +16,7 @@ const expectedDbName = cliDbUri.split('/').pop();
 
 const runCli = async (args) => {
   try {
-    const { stdout, stderr } = await execFileAsync(process.execPath, [cliScript, ...args], {
+    const { stdout, stderr } = await execFileAsync(process.execPath, ['--import', 'tsx', cliScript, ...args], {
       env: { ...process.env, MONGODB_URI: cliDbUri },
       timeout: 20000,
     });

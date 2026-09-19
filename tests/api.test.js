@@ -78,6 +78,7 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
     it('should return 400 when email is missing', async () => {
       const res = await authorizedPost('/api/users').send({ name: 'Test User' });
       expect(res.status).toBe(400);
+      expect(res.body.data.message).toBe('Validation failed');
       expect(res.body.data.errors).toEqual(
         expect.arrayContaining([expect.objectContaining({ param: 'email' })])
       );
@@ -98,6 +99,7 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
 
       expect(first.status).toBe(201);
       expect(second.status).toBe(409);
+      expect(second.body.data.message).toBe('User creation failed');
       expect(second.body.data.errors).toEqual(
         expect.arrayContaining([expect.objectContaining({ param: 'email' })])
       );
@@ -307,6 +309,7 @@ describe('API Smoke Tests', { timeout: 30000 }, () => {
         .send({ email: 'invalid@example.com', password: 'wrong' });
       expect(res.status).toBe(401);
       expect(res.body.status).toBe(0);
+      expect(res.body.data.message).toBe('Invalid credentials');
       expect(res.body.data.errors).toBeInstanceOf(Array);
     });
 

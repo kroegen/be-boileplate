@@ -20,9 +20,22 @@ After implementing the current TODO:
    - identify all files changed for the current TODO
    - include contents of new untracked files created for the current TODO because normal `git diff` does not include them
 6. Write the complete review package to a fresh reviewer handoff file defined below.
-7. Call the `reviewer` subagent in the foreground.
-8. Wait for the reviewer result inline.
-9. Do not call `list_agents` while waiting.
+7. Call the `reviewer` subagent with:
+   - `subagent_type: "reviewer"`
+   - `run_in_background: false`
+8. Keep the reviewer invocation in the foreground until it returns normally.
+9. Do not call `list_agents`, `task_stop`, or `send_message` while waiting.
+
+The reviewer invocation MUST remain foreground and synchronous.
+
+Never:
+- launch the current review as a background task
+- call `task_stop` on the current reviewer
+- cancel the reviewer because it is taking time
+- treat a still-running reviewer as failed
+- attempt to recover partial output from a cancelled reviewer
+
+Do not proceed until the foreground reviewer call returns normally or the agent tool itself reports a technical failure.
 
 Do not ask the reviewer to rediscover implementation changes from the repository.
 
@@ -268,7 +281,9 @@ Avoid:
 
 After writing the scout handoff file:
 
-1. Call the `scout` subagent in the foreground.
+1. Call the `scout` subagent with:
+   - `subagent_type: "scout"`
+   - `run_in_background: false`
 2. Pass:
    - the exact TODO text
    - the TODO.md line number
@@ -276,7 +291,21 @@ After writing the scout handoff file:
 3. Tell the scout to read ONLY that handoff file.
 4. Tell the scout not to inspect the repository or TODO.md.
 5. Tell the scout not to implement anything.
-6. Wait for the scout result before editing implementation files.
+6. Keep the scout invocation in the foreground until it returns normally.
+7. Do not call `list_agents`, `task_stop`, or `send_message` while waiting.
+8. Do not edit implementation files until the foreground scout call has returned a usable plan.
+
+The current-TODO scout MUST remain foreground and synchronous.
+
+Never:
+- launch the current-TODO scout as a background task
+- call `task_stop` on the current-TODO scout
+- cancel the scout because it is taking time
+- treat a still-running scout as failed
+- attempt to recover partial output after cancelling a scout
+- replace the scout with `Explore` while the scout is running
+
+A slow scout is still a running scout. Wait for the foreground `agent` call to return normally.
 
 The scout result is advisory. The main agent owns implementation decisions.
 

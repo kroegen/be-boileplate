@@ -1,10 +1,19 @@
-import { Schema } from '#src/mongoose.js';
+import { Schema, model, type HydratedDocument } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-const CommentSchema = new Schema({
+export interface CommentData {
+  _id: string;
+  author: string;
+  content?: string | null;
+  postId?: string | null;
+}
+
+export type CommentDocument = HydratedDocument<CommentData>;
+
+const CommentSchema = new Schema<CommentData>({
   _id: {
     type: String,
-    default: uuidv4,
+    default: () => uuidv4(),
   },
   author: {
     type: String,
@@ -19,4 +28,6 @@ const CommentSchema = new Schema({
   },
 });
 
-export default CommentSchema;
+const CommentModel = model<CommentData>('CommentModel', CommentSchema);
+export default CommentModel;
+export { CommentModel };

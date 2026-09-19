@@ -35,7 +35,7 @@ describe('configuration', () => {
   });
 
   it('shows CLI help without server configuration', () => {
-    const result = spawnSync(process.execPath, [cliScript, '--help'], {
+    const result = spawnSync(process.execPath, ['--import', 'tsx', cliScript, '--help'], {
       env: {},
       encoding: 'utf8',
     });

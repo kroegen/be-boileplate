@@ -133,7 +133,7 @@
 - [x] Switch package to ESM
 - [x] Install TypeScript tooling and add a strict tsconfig that allows JS/TS coexistence during migration
 - [x] Convert config, utilities, and the database layer to TypeScript; pass typecheck and existing regressions
-- [ ] Convert models and services to TypeScript; pass typecheck and database/API regressions
+- [x] Convert models and services to TypeScript; pass typecheck and database/API regressions
 - [ ] Convert controllers, routes, and app/server to TypeScript; pass typecheck and API regressions
 - [ ] Convert the CLI to TypeScript; pass typecheck and CLI regressions
 - [ ] Remove allowJs and remaining application JavaScript, then pass strict typecheck and production build

@@ -8,3 +8,5 @@ export const userCreateSchema = z.object({
     .min(1, { message: 'Email is required' }),
   password: z.string().min(1, { message: 'Password is required' }).optional(),
 });
+
+export type UserCreateInput = z.infer<typeof userCreateSchema>;

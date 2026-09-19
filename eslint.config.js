@@ -9,14 +9,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default [
-  js.configs.recommended,
   {
     ignores: [
       'node_modules/',
       'dist/',
       '.qwen/',
       'eslint.config.js',
-      'src/services/sessions/create.js',
     ],
   },
   // JavaScript files
@@ -28,6 +26,7 @@ export default [
       globals: globals.node,
     },
     rules: {
+      ...js.configs.recommended.rules,
       'no-console': 'warn',
       'no-debugger': 'warn',
       'no-unused-vars': ['error', {

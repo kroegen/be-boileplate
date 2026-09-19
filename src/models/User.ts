@@ -1,12 +1,31 @@
-import { mongoose, Schema } from '#src/mongoose.js';
+import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { hashPassword, verifyPassword } from '#src/utils/auth.js';
 
-const UserSchema = new Schema(
+export interface UserData {
+  _id: string;
+  name?: string | null;
+  email: string;
+  passwordHash: string;
+  role: 'ADMIN' | 'USER';
+  status: 'ACTIVE' | 'BLOCKED' | 'PENDING';
+  createdAt: Date;
+  updatedAt: Date;
+  password?: string;
+}
+
+export interface UserDocumentMethods {
+  checkPassword(plainText: string): Promise<boolean>;
+}
+
+export type UserDocument = HydratedDocument<UserData, UserDocumentMethods>;
+type UserModelType = Model<UserData, {}, UserDocumentMethods>;
+
+const UserSchema = new Schema<UserData, UserModelType, UserDocumentMethods>(
   {
     _id: {
       type: String,
-      default: uuidv4,
+      default: () => uuidv4(),
     },
     name: {
       type: String,
@@ -37,21 +56,29 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.virtual('password').set(function setHash(this: { $locals: { password?: string } }, password: string) {
+UserSchema.virtual('password').set<UserDocument>(function setHash(password: string) {
   this.$locals.password = password;
 });
 
-UserSchema.methods = {
-  async checkPassword(plainText: string): Promise<boolean> {
+UserSchema.method<UserDocument>(
+  'checkPassword',
+  async function checkPassword(plainText: string): Promise<boolean> {
     return verifyPassword(plainText, this.passwordHash);
-  },
-};
+  }
+);
 
-UserSchema.pre('save', async function () {
-  if (this.$locals.password !== undefined) {
-    this.passwordHash = await hashPassword(this.$locals.password as string);
+UserSchema.pre<UserDocument>('save', async function () {
+  const password: unknown = this.$locals.password;
+  if (password !== undefined) {
+    if (typeof password !== 'string') {
+      throw new Error('Password must be a non-empty string');
+    }
+    this.passwordHash = await hashPassword(password);
     delete this.$locals.password;
   }
 });
 
-export default mongoose.model('UserModel', UserSchema);
+const UserModel = model<UserData, UserModelType>('UserModel', UserSchema);
+
+export default UserModel;
+export { UserModel as User };
